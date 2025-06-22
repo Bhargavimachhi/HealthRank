@@ -9,13 +9,15 @@ import TriageResult from "./Patient/pages/TriageResult";
 import PatientDetailsPage from "./Patient/pages/PatientDetailPage";
 import PatientFormPage from "./Patient/pages/PatientForm";
 import AuthPage from "./Patient/pages/SignupPage";
+import LandingPage from "./LandingPage";
 
 
 export default function HackerTemplateSuccess() {
   return (
       <Router>
       <Routes>
-        <Route path="/" element={<AuthPage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login/patient" element={<AuthPage />} />
         <Route path="/report-upload" element={<ReportUpload />} />
         <Route path="/triage-result" element={<TriageResult />} />
         <Route path="/patient-details" element={<PatientDetailsPage />} />
