@@ -6,6 +6,20 @@ let reportSchema = new mongoose.Schema({
     ref: "Patient",
     required: true,
   },
+  type: {
+    type: String,
+    enum: {
+      values: [
+        "bloodSugar",
+        "bloodCount",
+        "serumCreatinine",
+        "urine",
+        "electrolyte",
+      ],
+      message: "{VALUE} is not supported",
+    },
+    required: true,
+  },
   result: {
     type: mongoose.Schema.Types.Mixed,
     required: true,
@@ -18,15 +32,19 @@ let reportSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-  triageLevel : {
+  triageLevel: {
     type: String,
-    required : true,
+    enum: {
+      values: ["critical", "abnormal", "stable", "normal"],
+      message: "{VALUE} is not supported",
+    },
+    required: true,
   },
-  image : {
+  image: {
     type: String,
     default: null,
   },
 });
 
 const Report = mongoose.model("Report", reportSchema);
-module.exports = Report;
+export default Report;
