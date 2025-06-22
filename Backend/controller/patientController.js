@@ -6,7 +6,7 @@ export const addPatient = async (req, res) => {
     let { error } = patientSchemaValidation.validate(req.body);
 
     if (error) {
-      return res.status(500).json({ message: error.details[0].message });
+      return res.status(400).json({ message: error.details[0].message });
     }
 
     let patient = new Patient(req.body);
