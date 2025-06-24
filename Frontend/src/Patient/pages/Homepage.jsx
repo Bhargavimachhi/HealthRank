@@ -58,15 +58,19 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2 rounded-lg">
-                <Stethoscope className="h-6 w-6 text-white" />
-              </div>
-              <h1 className="text-xl font-bold text-gray-900">HealthTriage</h1>
-            </div>
+    <header className="bg-white shadow-sm border-b">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex justify-between items-center h-16">
+      <div className="flex items-center gap-3">
+        <div className="p-1">
+          <img
+            src="/src/assets/health rank logo.png"
+            alt="Health Rank Logo"
+            className="h-10 w-auto object-contain"
+          />
+        </div>
+        <h1 className="text-xl font-bold text-gray-900">HealthTriage</h1>
+      </div>
 
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" className="relative">
@@ -158,7 +162,7 @@ export default function HomePage() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Button
-                    className="h-20 flex-col gap-2 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white"
+          className="h-20 bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 py-2 text-white text-sm"
                     onClick={() => window.location.href = "/report-upload"}
                   >
                     <Plus className="h-6 w-6" />
