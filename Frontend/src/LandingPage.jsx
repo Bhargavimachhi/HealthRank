@@ -11,10 +11,10 @@ import {
   UserCheck,
   Hospital,
 } from "lucide-react";
-import { useNavigate } from "react-router";
+
 
 export default function LandingPage() {
-  const navigate = useNavigate();
+
   const features = [
     {
       title: "Organized Report Storage",
@@ -49,7 +49,7 @@ export default function LandingPage() {
   ];
 
   const handleLoginPageRedirection = () => {
-    navigate("/login/patient");
+    window.location.href = "/login/patient"; 
   };
 
   return (
