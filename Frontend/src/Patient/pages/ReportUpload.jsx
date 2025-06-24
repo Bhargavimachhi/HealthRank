@@ -143,15 +143,19 @@ export default function ReportUploadPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-3 rounded-full">
-              <Stethoscope className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Upload Medical Report</h1>
-          <p className="text-gray-600 mt-2">Get instant triage assessment for your health reports</p>
-        </div>
+       <div className="text-center mb-8">
+  <div className="flex justify-center mb-4">
+    <div className="p-3 rounded-full bg-white">
+      <img
+        src="/src/assets/health rank logo.png"
+        alt="Health Rank Logo"
+        className="h-12 w-12 object-contain"
+      />
+    </div>
+  </div>
+  <h1 className="text-3xl font-bold text-gray-900">Upload Medical Report</h1>
+  <p className="text-gray-600 mt-2">Get instant triage assessment for your health reports</p>
+</div>
 
         <Card className="shadow-xl border-0">
           <CardHeader>
@@ -365,7 +369,7 @@ export default function ReportUploadPage() {
                     </Button>
                     <Button
                       type="submit"
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+          className="flex-1 bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 py-2 text-white text-sm"
                       disabled={isLoading}
                     >
                       {isLoading ? "Processing..." : "Submit & Get Triage"}
