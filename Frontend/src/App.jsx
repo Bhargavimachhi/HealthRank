@@ -10,6 +10,8 @@ import PatientDetailsPage from "./Patient/pages/PatientDetailPage";
 import PatientFormPage from "./Patient/pages/PatientForm";
 import AuthPage from "./Patient/pages/SignupPage";
 import LandingPage from "./LandingPage";
+import DashboardPage from "./Doctor/pages/DashBoardPage";
+import LoginPage from "./Doctor/pages/LoginPage";
 
 
 export default function HackerTemplateSuccess() {
@@ -23,6 +25,8 @@ export default function HackerTemplateSuccess() {
         <Route path="/patient-details" element={<PatientDetailsPage />} />
         <Route path="/patient-form" element={<PatientFormPage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/doctor/dashboard" element={<DashboardPage />} />
+        <Route path="/login/doctor" element={<LoginPage />} />
        
       </Routes>
     </Router>
