@@ -51,18 +51,24 @@ export default function LandingPage() {
   const handleLoginPageRedirection = () => {
     navigate("/login/patient");
   };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 text-gray-800">
       {/* Navbar */}
       <nav className="flex justify-between items-center px-8 py-4 shadow-md bg-white sticky top-0 z-50">
         <div className="flex items-center space-x-3">
-          <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2 rounded-full">
-            <Stethoscope className="h-6 w-6 text-white" />
+          <div>
+            <img
+              src="./src/assets/health rank logo.png"
+              alt="Health Rank Logo"
+              className="h-12 w-auto object-contain"
+            />
           </div>
           <span className="text-xl font-bold text-gray-800">HealthTriage</span>
         </div>
+
         <Button
-          className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 px-6 py-2 text-white text-sm"
+          className="bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 py-2 text-white text-sm"
           onClick={handleLoginPageRedirection}
         >
           Login
@@ -71,17 +77,23 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="text-center px-6 py-24 space-y-8">
-        <div className="mx-auto h-15 w-15 bg-gradient-to-r from-blue-600 to-green-600 p-2 rounded-full">
-          <Stethoscope className="p-1 h-full w-full text-white" />
+        <div className="mx-auto h-20 w-20">
+          <img
+            src="./src/assets/health rank logo.png"
+            alt="Health Rank Logo"
+            className="h-full w-full object-contain"
+          />
         </div>
+
         <h1 className="text-5xl font-bold mb-20">Your Health, Smarter</h1>
 
         <p className="text-gray-600 text-lg max-w-3xl mx-auto m-20">
           HealthTriage leverages AI to make patient care seamless—from report
           analysis to consultations and history tracking.
         </p>
+
         <Button
-          className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 px-10 py-4 text-lg"
+          className="bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-10 py-4 text-lg text-white"
           onClick={handleLoginPageRedirection}
         >
           Get Started
@@ -117,7 +129,7 @@ export default function LandingPage() {
         </p>
         <div className="flex justify-center">
           <Button
-            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 px-10 py-4 text-lg"
+            className="bg-gradient-to-r from-[#33c2a6] to-[#007ac2] hover:from-[#2ea88f] hover:to-[#0062a0] px-10 py-4 text-lg text-white"
             onClick={handleLoginPageRedirection}
           >
             Explore More
@@ -159,7 +171,7 @@ export default function LandingPage() {
 
       {/* Partners or Hospitals Section */}
       <section className="px-6 py-24 bg-gradient-to-br from-green-50 to-blue-100 text-center space-y-6">
-        <div className="mx-auto h-15 w-15 bg-gradient-to-r from-blue-600 to-green-600 p-2 rounded-full">
+        <div className="mx-auto h-15 w-15 bg-gradient-to-r from-[#007ac2] to-[#33c2a6] p-2 rounded-full">
           <Hospital className="p-1 h-full w-full text-white" />
         </div>
         <h2 className="text-4xl font-bold mb-20">For Hospitals & Clinics</h2>
@@ -169,7 +181,7 @@ export default function LandingPage() {
           modern care to every doorstep.
         </p>
         <Button
-          className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 px-10 py-4 text-lg"
+          className="bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-10 py-4 text-lg text-white"
           onClick={handleLoginPageRedirection}
         >
           Partner With Us
