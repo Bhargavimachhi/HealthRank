@@ -1,28 +1,47 @@
-import { useState } from "react"
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Stethoscope, Plus, FileText, Calendar, User, Phone, MapPin, LogOut, Bell, Settings } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Stethoscope,
+  Plus,
+  FileText,
+  Calendar,
+  User,
+  Phone,
+  MapPin,
+  LogOut,
+  Bell,
+  Settings,
+} from "lucide-react";
+import { useUserContext } from "../../../context/userContext";
 
-export default function HomePage() {
-  // Dummy patient data
-  const [patientData] = useState({
-    fullName: "John Doe",
-    age: 32,
-    gender: "Male",
-    city: "New York",
-    state: "NY",
-    medicalConditions: "Hypertension, Asthma",
-  })
-  const [notifications] = useState(2)
+export default function PatientHomePage() {
+  const { userData } = useUserContext();
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated")
-    localStorage.removeItem("patientData")
-    localStorage.removeItem("userMobile")
-    window.location.href = "/"
+  function countAgeFromBirthday(birthday) {
+    const birthDate = new Date(birthday);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    // Check if the birthday has occurred yet this year
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    return age;
   }
 
   const recentActivities = [
@@ -42,9 +61,9 @@ export default function HomePage() {
       date: "2024-01-25",
       status: "upcoming",
     },
-  ]
+  ];
 
-  if (!patientData) {
+  if (!userData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
         <div className="text-center">
@@ -52,51 +71,22 @@ export default function HomePage() {
           <p className="text-gray-600">Loading your profile...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       {/* Header */}
-    <header className="bg-white shadow-sm border-b">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="flex justify-between items-center h-16">
-      <div className="flex items-center gap-3">
-        <div className="p-1">
-          <img
-            src="/src/assets/health rank logo.png"
-            alt="Health Rank Logo"
-            className="h-10 w-auto object-contain"
-          />
-        </div>
-        <h1 className="text-xl font-bold text-gray-900">HealthTriage</h1>
-      </div>
-
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-5 w-5" />
-                {notifications > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-red-500">
-                    {notifications}
-                  </Badge>
-                )}
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Settings className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, {patientData.fullName}! 👋</h2>
-          <p className="text-gray-600">Manage your health reports and get instant triage assessments</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Welcome back, {userData.name}! 👋
+          </h2>
+          <p className="text-gray-600">
+            Manage your health reports and get instant triage assessments
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -113,37 +103,25 @@ export default function HomePage() {
                 <div className="flex items-center gap-4">
                   <Avatar className="h-16 w-16">
                     <AvatarFallback className="text-lg font-semibold bg-gradient-to-r from-blue-100 to-green-100 text-blue-700">
-                      {patientData.fullName
-                        .split(" ")
+                      {userData?.name
+                        ?.split(" ")
                         .map((n) => n[0])
                         .join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-semibold text-lg">{patientData.fullName}</h3>
+                    <h3 className="font-semibold text-lg">{userData.name}</h3>
                     <p className="text-gray-600">
-                      {patientData.age} years, {patientData.gender}
+                      {countAgeFromBirthday(userData.birthday)} years,{" "}
+                      {userData.gender}
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="h-4 w-4 text-gray-400" />
-                    <span className="text-gray-600">
-                      {patientData.city}, {patientData.state}
-                    </span>
-                  </div>
-                </div>
-
-                {patientData.medicalConditions && (
-                  <div>
-                    <h4 className="font-medium mb-2">Medical Conditions</h4>
-                    <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">{patientData.medicalConditions}</p>
-                  </div>
-                )}
-
-                <Button variant="outline" className="w-full" onClick={() => window.location.href = "/patient-form"}>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                >
                   <FileText className="h-4 w-4 mr-2" />
                   Update Profile
                 </Button>
@@ -157,13 +135,15 @@ export default function HomePage() {
             <Card className="shadow-lg border-0">
               <CardHeader>
                 <CardTitle className="text-xl">Quick Actions</CardTitle>
-                <CardDescription>Upload reports and get instant health assessments</CardDescription>
+                <CardDescription>
+                  Upload reports and get instant health assessments
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Button
-          className="h-20 bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 py-2 text-white text-sm"
-                    onClick={() => window.location.href = "/report-upload"}
+                    className="h-20 bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 py-2 text-white text-sm"
+                    onClick={() => (window.location.href = "/report-upload")}
                   >
                     <Plus className="h-6 w-6" />
                     Add Medical Report
@@ -188,15 +168,21 @@ export default function HomePage() {
             <Card className="shadow-lg border-0">
               <CardHeader>
                 <CardTitle className="text-xl">Health Summary</CardTitle>
-                <CardDescription>Your recent health activities and status</CardDescription>
+                <CardDescription>
+                  Your recent health activities and status
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-green-800">Overall Status</p>
-                        <p className="text-2xl font-bold text-green-900">Good</p>
+                        <p className="text-sm font-medium text-green-800">
+                          Overall Status
+                        </p>
+                        <p className="text-2xl font-bold text-green-900">
+                          Good
+                        </p>
                       </div>
                       <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
                         <Stethoscope className="h-6 w-6 text-green-600" />
@@ -207,7 +193,9 @@ export default function HomePage() {
                   <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-blue-800">Reports Uploaded</p>
+                        <p className="text-sm font-medium text-blue-800">
+                          Reports Uploaded
+                        </p>
                         <p className="text-2xl font-bold text-blue-900">3</p>
                       </div>
                       <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -222,17 +210,36 @@ export default function HomePage() {
                   <h4 className="font-medium mb-4">Recent Activities</h4>
                   <div className="space-y-3">
                     {recentActivities.map((activity) => (
-                      <div key={activity.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
+                      <div
+                        key={activity.id}
+                        className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
+                      >
                         <div className="bg-white p-2 rounded-full shadow-sm">
-                          {activity.type === "appointment" && <Calendar className="h-4 w-4 text-blue-600" />}
-                          {activity.type === "report" && <FileText className="h-4 w-4 text-green-600" />}
+                          {activity.type === "appointment" && (
+                            <Calendar className="h-4 w-4 text-blue-600" />
+                          )}
+                          {activity.type === "report" && (
+                            <FileText className="h-4 w-4 text-green-600" />
+                          )}
                         </div>
                         <div className="flex-1">
-                          <h5 className="font-medium text-gray-900">{activity.title}</h5>
-                          <p className="text-sm text-gray-600">{activity.description}</p>
-                          <p className="text-xs text-gray-500 mt-1">{activity.date}</p>
+                          <h5 className="font-medium text-gray-900">
+                            {activity.title}
+                          </h5>
+                          <p className="text-sm text-gray-600">
+                            {activity.description}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {activity.date}
+                          </p>
                         </div>
-                        <Badge variant={activity.status === "upcoming" ? "default" : "secondary"}>
+                        <Badge
+                          variant={
+                            activity.status === "upcoming"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {activity.status}
                         </Badge>
                       </div>
@@ -245,5 +252,5 @@ export default function HomePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
