@@ -8,12 +8,13 @@ import ReportUpload from "./Patient/pages/ReportUpload";
 import TriageResult from "./Patient/pages/TriageResult";
 import PatientDetailsPage from "./Patient/pages/PatientDetailPage";
 import PatientFormPage from "./Patient/pages/PatientForm";
-import AuthPage from "./Patient/pages/SignupPage";
 import LandingPage from "./LandingPage";
 import DashboardPage from "./Doctor/pages/DashBoardPage";
-import LoginPage from "./Doctor/pages/LoginPage";
 import { Toaster } from "react-hot-toast";
 import PatientLoginPage from "./Patient/pages/PatientLoginPage";
+import DoctorLoginPage from "./Doctor/pages/DoctorLoginPage";
+import LoginPage from "./Authentication/pages/LoginPage"
+import SignupPage from "./Authentication/pages/SignupPage";
 
 export default function HackerTemplateSuccess() {
   return (
@@ -21,6 +22,8 @@ export default function HackerTemplateSuccess() {
       <Toaster />
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/signup/patient" element={<PatientFormPage />} />
         <Route path="/login/patient" element={<PatientLoginPage />} />
         <Route path="/report-upload" element={<ReportUpload />} />
@@ -28,7 +31,7 @@ export default function HackerTemplateSuccess() {
         <Route path="/patient-details" element={<PatientDetailsPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/login/doctor" element={<LoginPage />} />
+        <Route path="/login/doctor" element={<DoctorLoginPage />} />
       </Routes>
     </Router>
   );

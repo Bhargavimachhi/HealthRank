@@ -16,11 +16,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 
-export default function AuthPage() {
+export default function DoctorLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [authMethod, setAuthMethod] = useState("phone");
-  const [isSignup, setIsSignup] = useState(false);
   const [error, setError] = useState("");
 
   const [mobileNumber, setMobileNumber] = useState("");
@@ -61,40 +60,11 @@ export default function AuthPage() {
     setTimeout(() => {
       setIsLoading(false);
       if (otp === "123456") {
-        localStorage.setItem("userMobile", mobileNumber);
-        localStorage.setItem("isAuthenticated", "true");
-        window.location.href = isSignup ? "/patient-form" : "/homepage";
+        window.location.href = "/doctor";
       } else {
         setError("Invalid OTP. Please try again.");
       }
     }, 1000);
-  };
-
-  const handlePatientEmailSignup = async () => {
-    try {
-      const res = await axios.post(
-        `http://localhost:5000/signup/email-password`,
-        {
-          email: email,
-          password: password,
-        }
-      );
-      if (res.status == 200) {
-        localStorage.setItem(
-          "healthRankAuth",
-          JSON.stringify({
-            email: email,
-            isAuthenticated: true,
-          })
-        );
-        navigate("/patient-form");
-      } else {
-        toast.error("Email is already Registered");
-      }
-    } catch (err) {
-      console.log(err);
-      toast.error("Email is already Registered");
-    }
   };
 
   const handlePatientEmailLogin = async () => {
@@ -111,10 +81,11 @@ export default function AuthPage() {
           "healthRankAuth",
           JSON.stringify({
             email: email,
+            role: "doctor",
             isAuthenticated: true,
           })
         );
-        navigate("/patient-details");
+        navigate("/doctor");
       } else {
         toast.error("Email is already Registered");
       }
@@ -132,12 +103,7 @@ export default function AuthPage() {
       setError("Please enter email and password");
       return;
     }
-
-    if (isSignup) {
-      handlePatientEmailSignup();
-    } else {
-      handlePatientEmailLogin();
-    }
+    handlePatientEmailLogin();
   };
 
   const resetForm = () => {
@@ -167,34 +133,20 @@ export default function AuthPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             HealthTriage
           </h1>
-          <p className="text-gray-600">Smart Patient Care & Assessment</p>
+          <p className="text-gray-600">Smart Doctor Care & Assessment</p>
         </div>
 
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-4">
-            <Tabs
-              defaultValue="login"
-              onValueChange={(value) => {
-                setIsSignup(value === "signup");
-                resetForm();
-              }}
-            >
-              <TabsList className="grid w-full grid-cols-2">
+            <Tabs defaultValue="login">
+              <TabsList className="w-full">
                 <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
                 <CardTitle className="text-xl mb-1">Welcome Back</CardTitle>
                 <CardDescription>
                   Log in using phone OTP or email and password.
-                </CardDescription>
-              </TabsContent>
-
-              <TabsContent value="signup">
-                <CardTitle className="text-xl mb-1">Create Account</CardTitle>
-                <CardDescription>
-                  Sign up with your preferred method below.
                 </CardDescription>
               </TabsContent>
             </Tabs>
@@ -325,20 +277,11 @@ export default function AuthPage() {
                 </div>
 
                 <Button className="w-full h-12" disabled={isLoading}>
-                  {isSignup
-                    ? isLoading
-                      ? "Creating account..."
-                      : "Sign Up"
-                    : isLoading
-                    ? "Logging in..."
-                    : "Login"}
+                  {isLoading ? "Creating account..." : "Log In"}
                 </Button>
               </form>
             )}
 
-            <div className="text-center text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
-              <p className="font-medium">Demo OTP: 123456</p>
-            </div>
           </CardContent>
         </Card>
       </div>

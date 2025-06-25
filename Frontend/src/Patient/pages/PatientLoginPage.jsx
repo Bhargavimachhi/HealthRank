@@ -16,7 +16,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 
-export default function LoginPage() {
+export default function PatientLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [authMethod, setAuthMethod] = useState("phone");
@@ -60,9 +60,7 @@ export default function LoginPage() {
     setTimeout(() => {
       setIsLoading(false);
       if (otp === "123456") {
-        localStorage.setItem("userMobile", mobileNumber);
-        localStorage.setItem("isAuthenticated", "true");
-        window.location.href = isSignup ? "/patient-form" : "/homepage";
+        window.location.href = "/patient";
       } else {
         setError("Invalid OTP. Please try again.");
       }
@@ -83,10 +81,11 @@ export default function LoginPage() {
           "healthRankAuth",
           JSON.stringify({
             email: email,
+            role: "patient",
             isAuthenticated: true,
           })
         );
-        navigate("/patient-details");
+        navigate("/patient");
       } else {
         toast.error("Email is already Registered");
       }
@@ -283,9 +282,6 @@ export default function LoginPage() {
               </form>
             )}
 
-            <div className="text-center text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
-              <p className="font-medium">Demo OTP: 123456</p>
-            </div>
           </CardContent>
         </Card>
       </div>
