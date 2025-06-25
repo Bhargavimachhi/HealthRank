@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import patientRouter from "./routes/patientRoutes.js";
 import authRouter from "./routes/authenticationRoutes.js";
+import doctorRouter from "./routes/doctorRoutes.js";
 
 dotenv.config();
 
@@ -30,4 +31,5 @@ app.listen(PORT, async () => {
 });
 
 app.use("/patient", patientRouter);
+app.use("/doctor", doctorRouter);
 app.use("/" , authRouter);

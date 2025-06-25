@@ -11,8 +11,10 @@ import {
   UserCheck,
   Hospital,
 } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const features = [
     {
       title: "Organized Report Storage",
@@ -46,14 +48,6 @@ export default function LandingPage() {
     },
   ];
 
-  const redirectTo = (role) => {
-    if (role === "doctor") {
-      window.location.href = "/login/doctor";
-    } else {
-      window.location.href = "/login/patient";
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 text-gray-800">
       {/* Navbar */}
@@ -72,15 +66,15 @@ export default function LandingPage() {
         <div className="flex gap-2 md:gap-4 mt-4 md:mt-0 flex-wrap justify-center">
           <Button
             className="bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-4 py-2 text-white text-sm"
-            onClick={() => redirectTo("patient")}
+            onClick={() => navigate("login")}
           >
-            Patient Login
+            Login
           </Button>
           <Button
             className="bg-gradient-to-r from-[#33c2a6] to-[#007ac2] hover:from-[#2ea88f] hover:to-[#0062a0] px-4 py-2 text-white text-sm"
-            onClick={() => redirectTo("doctor")}
+            onClick={() => navigate("signup")}
           >
-            Doctor Login
+            SignUp
           </Button>
         </div>
       </nav>
@@ -104,16 +98,10 @@ export default function LandingPage() {
 
         <div className="flex flex-wrap justify-center gap-4 md:gap-6">
           <Button
-            className="bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 md:px-10 py-3 md:py-4 text-base md:text-lg text-white"
-            onClick={() => redirectTo("patient")}
-          >
-            Patient Get Started
-          </Button>
-          <Button
             className="bg-gradient-to-r from-[#33c2a6] to-[#007ac2] hover:from-[#2ea88f] hover:to-[#0062a0] px-6 md:px-10 py-3 md:py-4 text-base md:text-lg text-white"
-            onClick={() => redirectTo("doctor")}
+            onClick={() => navigate("/login")}
           >
-            Doctor Get Started
+            Get Started
           </Button>
         </div>
       </section>
@@ -148,15 +136,9 @@ export default function LandingPage() {
         <div className="flex flex-wrap justify-center gap-4 md:gap-6">
           <Button
             className="bg-gradient-to-r from-[#33c2a6] to-[#007ac2] hover:from-[#2ea88f] hover:to-[#0062a0] px-6 md:px-10 py-3 md:py-4 text-base md:text-lg text-white"
-            onClick={() => redirectTo("patient")}
+            onClick={() => navigate("login")}
           >
-            Explore as Patient
-          </Button>
-          <Button
-            className="bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 md:px-10 py-3 md:py-4 text-base md:text-lg text-white"
-            onClick={() => redirectTo("doctor")}
-          >
-            Explore as Doctor
+            Explore
           </Button>
         </div>
       </section>
@@ -206,7 +188,6 @@ export default function LandingPage() {
         </p>
         <Button
           className="bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 md:px-10 py-3 md:py-4 text-base md:text-lg text-white"
-          onClick={() => redirectTo("doctor")}
         >
           Partner With Us
         </Button>
