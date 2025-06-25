@@ -23,9 +23,11 @@ import {
   Settings,
 } from "lucide-react";
 import { useUserContext } from "../../../context/userContext";
+import { useNavigate } from "react-router";
 
 export default function PatientHomePage() {
   const { userData } = useUserContext();
+  const navigate = useNavigate();
 
   function countAgeFromBirthday(birthday) {
     const birthDate = new Date(birthday);
@@ -143,7 +145,7 @@ export default function PatientHomePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Button
                     className="h-20 bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 py-2 text-white text-sm"
-                    onClick={() => (window.location.href = "/report-upload")}
+                    onClick={() => (navigate(`/patient/${userData._id}/report-upload`))}
                   >
                     <Plus className="h-6 w-6" />
                     Add Medical Report

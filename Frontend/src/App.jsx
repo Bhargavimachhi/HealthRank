@@ -16,7 +16,7 @@ import LoginPage from "./Authentication/pages/LoginPage";
 import SignupPage from "./Authentication/pages/SignupPage";
 import PatientHomePage from "./Patient/pages/PatientHomepage";
 import PatientLayout from "./layouts/PatientLayout";
-import { LoginAlert } from "./components/LoginAlert";
+import LoginAlert from "./components/LoginAlert";
 
 export default function HackerTemplateSuccess() {
   const healthRankAuth = JSON.parse(localStorage.getItem("healthRankAuth"));
@@ -31,10 +31,9 @@ export default function HackerTemplateSuccess() {
         <Route path="/signup/patient" element={<PatientFormPage />} />
         <Route path="/login/doctor" element={<DoctorLoginPage />} />
         <Route path="/login/patient" element={<PatientLoginPage />} />
-        <Route path="/report-upload" element={<ReportUpload />} />
+        
         <Route path="/triage-result" element={<TriageResult />} />
         <Route path="/patient-details" element={<PatientDetailsPage />} />
-        {/* <Route path="/patient" element={<PatientHomePage />} /> */}
 
         <Route path="/dashboard" element={<DashboardPage />} />
 
@@ -49,6 +48,7 @@ export default function HackerTemplateSuccess() {
           }
         >
           <Route path="" element={<PatientHomePage />} />
+          <Route path=":id/report-upload" element={<ReportUpload />} />
         </Route>
       </Routes>
     </Router>

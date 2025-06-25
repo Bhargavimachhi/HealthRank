@@ -26,7 +26,7 @@ let reportSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    required: true,
+    default : Date.now(),
   },
   remarks: {
     type: String,
@@ -40,7 +40,7 @@ let reportSchema = new mongoose.Schema({
     },
     required: true,
   },
-  image: {
+  file: {
     type: String,
     default: null,
   },
