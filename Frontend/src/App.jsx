@@ -13,6 +13,7 @@ import LandingPage from "./LandingPage";
 import DashboardPage from "./Doctor/pages/DashBoardPage";
 import LoginPage from "./Doctor/pages/LoginPage";
 import { Toaster } from "react-hot-toast";
+import PatientLoginPage from "./Patient/pages/PatientLoginPage";
 
 export default function HackerTemplateSuccess() {
   return (
@@ -20,11 +21,11 @@ export default function HackerTemplateSuccess() {
       <Toaster />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login/patient" element={<AuthPage />} />
+        <Route path="/signup/patient" element={<PatientFormPage />} />
+        <Route path="/login/patient" element={<PatientLoginPage />} />
         <Route path="/report-upload" element={<ReportUpload />} />
         <Route path="/triage-result" element={<TriageResult />} />
         <Route path="/patient-details" element={<PatientDetailsPage />} />
-        <Route path="/patient-form" element={<PatientFormPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/login/doctor" element={<LoginPage />} />
