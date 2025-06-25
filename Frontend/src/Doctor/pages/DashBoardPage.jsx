@@ -1,3 +1,4 @@
+//HealthRank\Frontend\src\Doctor\pages\DashBoardPage.jsx
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -128,7 +129,7 @@ export default function DashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem("doctorAuth")
     localStorage.removeItem("doctorName")
-    window.location.href = "/login"
+    window.location.href = "/login/doctor"
   }
 
   const getStatusColor = (status) => {
