@@ -1,21 +1,43 @@
+// PatientDetailPage.jsx
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { useState } from "react"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Progress } from "@/components/ui/progress"
-import { User, Users, Calendar, MapPin, FileText, Heart } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
+import {
+  User,
+  Users,
+  Calendar,
+  MapPin,
+  FileText,
+  Heart,
+} from "lucide-react";
 
 export default function PatientDetailsPage() {
- 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const navigate = useNavigate(); // ✅ replace useRouter
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [submittedData, setSubmittedData] = useState(null);
   const [formData, setFormData] = useState({
     fullName: "",
     guardianName: "",
@@ -26,26 +48,36 @@ export default function PatientDetailsPage() {
     state: "",
     pinCode: "",
     medicalConditions: "",
-  })
+  });
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const calculateProgress = () => {
-    const requiredFields = ["fullName", "guardianName", "age", "gender", "street", "city", "state", "pinCode"]
-    const filledFields = requiredFields.filter((field) => formData[field].trim() !== "")
-    return (filledFields.length / requiredFields.length) * 100
-  }
+    const requiredFields = [
+      "fullName",
+      "guardianName",
+      "age",
+      "gender",
+      "street",
+      "city",
+      "state",
+      "pinCode",
+    ];
+    const filledFields = requiredFields.filter(
+      (field) => formData[field].trim() !== ""
+    );
+    return (filledFields.length / requiredFields.length) * 100;
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError("")
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
 
-    // Validate required fields
     const requiredFields = {
       fullName: "Full Name",
       guardianName: "Guardian Name",
@@ -55,36 +87,33 @@ export default function PatientDetailsPage() {
       city: "City",
       state: "State",
       pinCode: "PIN Code",
-    }
+    };
 
     for (const [field, label] of Object.entries(requiredFields)) {
       if (!formData[field].trim()) {
-        setError(`${label} is required`)
-        return
+        setError(`${label} is required`);
+        return;
       }
     }
 
-    // Validate age
-    const age = Number.parseInt(formData.age)
+    const age = Number.parseInt(formData.age);
     if (isNaN(age) || age < 0 || age > 150) {
-      setError("Please enter a valid age")
-      return
+      setError("Please enter a valid age");
+      return;
     }
 
-    // Validate PIN code
     if (formData.pinCode.length !== 6) {
-      setError("PIN Code must be 6 digits")
-      return
+      setError("PIN Code must be 6 digits");
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
-    // Simulate API call to save patient details
     setTimeout(() => {
-      setIsLoading(false)
-      window.location.href = "/dashboard"
-    }, 2000)
-  }
+      setIsLoading(false);
+      setSubmittedData(formData);
+    }, 2000);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -95,14 +124,20 @@ export default function PatientDetailsPage() {
               <Heart className="h-8 w-8 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Patient Registration</h1>
-          <p className="text-gray-600 mt-2">Please provide your details to complete registration</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Patient Registration
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Please provide your details to complete registration
+          </p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Personal Information</CardTitle>
-            <CardDescription>Fill in your details to create your patient profile</CardDescription>
+            <CardDescription>
+              Fill in your details to create your patient profile
+            </CardDescription>
             <div className="mt-4">
               <div className="flex justify-between text-sm text-gray-600 mb-2">
                 <span>Progress</span>
@@ -133,9 +168,10 @@ export default function PatientDetailsPage() {
                     <Input
                       id="fullName"
                       type="text"
-                      placeholder="Enter your full name"
                       value={formData.fullName}
-                      onChange={(e) => handleInputChange("fullName", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("fullName", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -147,10 +183,11 @@ export default function PatientDetailsPage() {
                       <Input
                         id="guardianName"
                         type="text"
-                        placeholder="Father's/Mother's name"
-                        value={formData.guardianName}
-                        onChange={(e) => handleInputChange("guardianName", e.target.value)}
                         className="pl-10"
+                        value={formData.guardianName}
+                        onChange={(e) =>
+                          handleInputChange("guardianName", e.target.value)
+                        }
                         required
                       />
                     </div>
@@ -165,10 +202,11 @@ export default function PatientDetailsPage() {
                       <Input
                         id="age"
                         type="number"
-                        placeholder="Enter your age"
-                        value={formData.age}
-                        onChange={(e) => handleInputChange("age", e.target.value)}
                         className="pl-10"
+                        value={formData.age}
+                        onChange={(e) =>
+                          handleInputChange("age", e.target.value)
+                        }
                         min="0"
                         max="150"
                         required
@@ -178,7 +216,12 @@ export default function PatientDetailsPage() {
 
                   <div className="space-y-2">
                     <Label htmlFor="gender">Gender *</Label>
-                    <Select value={formData.gender} onValueChange={(value) => handleInputChange("gender", value)}>
+                    <Select
+                      value={formData.gender}
+                      onValueChange={(value) =>
+                        handleInputChange("gender", value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
@@ -192,11 +235,11 @@ export default function PatientDetailsPage() {
                 </div>
               </div>
 
-              {/* Address Details */}
+              {/* Address */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
-                  Address Information
+                  Address
                 </h3>
 
                 <div className="space-y-2">
@@ -204,86 +247,108 @@ export default function PatientDetailsPage() {
                   <Input
                     id="street"
                     type="text"
-                    placeholder="House number, street name"
                     value={formData.street}
-                    onChange={(e) => handleInputChange("street", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("street", e.target.value)
+                    }
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City *</Label>
-                    <Input
-                      id="city"
-                      type="text"
-                      placeholder="City"
-                      value={formData.city}
-                      onChange={(e) => handleInputChange("city", e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="state">State *</Label>
-                    <Input
-                      id="state"
-                      type="text"
-                      placeholder="State"
-                      value={formData.state}
-                      onChange={(e) => handleInputChange("state", e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="pinCode">PIN Code *</Label>
-                    <Input
-                      id="pinCode"
-                      type="text"
-                      placeholder="6-digit PIN"
-                      value={formData.pinCode}
-                      onChange={(e) => handleInputChange("pinCode", e.target.value.replace(/\D/g, "").slice(0, 6))}
-                      required
-                    />
-                  </div>
+                  <Input
+                    id="city"
+                    type="text"
+                    placeholder="City"
+                    value={formData.city}
+                    onChange={(e) =>
+                      handleInputChange("city", e.target.value)
+                    }
+                    required
+                  />
+                  <Input
+                    id="state"
+                    type="text"
+                    placeholder="State"
+                    value={formData.state}
+                    onChange={(e) =>
+                      handleInputChange("state", e.target.value)
+                    }
+                    required
+                  />
+                  <Input
+                    id="pinCode"
+                    type="text"
+                    placeholder="PIN"
+                    value={formData.pinCode}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "pinCode",
+                        e.target.value.replace(/\D/g, "").slice(0, 6)
+                      )
+                    }
+                    required
+                  />
                 </div>
               </div>
 
-              {/* Medical History */}
+              {/* Medical Info */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  Medical Information
+                  Medical Info
                 </h3>
 
                 <div className="space-y-2">
-                  <Label htmlFor="medicalConditions">Existing Medical Conditions</Label>
+                  <Label htmlFor="medicalConditions">Medical Conditions</Label>
                   <Textarea
                     id="medicalConditions"
-                    placeholder="Please list any existing medical conditions, allergies, or medications you are currently taking (optional)"
+                    placeholder="List any conditions or allergies"
                     value={formData.medicalConditions}
-                    onChange={(e) => handleInputChange("medicalConditions", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("medicalConditions", e.target.value)
+                    }
                     rows={4}
                   />
-                  <p className="text-sm text-gray-600">
-                    This information helps healthcare providers give you better care
-                  </p>
                 </div>
               </div>
 
               <div className="flex gap-4 pt-6">
-                <Button type="button" variant="outline" className="flex-1" onClick={() => router.push("/")}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => navigate("/")}
+                >
                   Back to Login
                 </Button>
                 <Button type="submit" className="flex-1" disabled={isLoading}>
-                  {isLoading ? "Saving Details..." : "Save & Continue"}
+                  {isLoading ? "Saving..." : "Save & Continue"}
                 </Button>
               </div>
             </form>
           </CardContent>
         </Card>
+
+        {submittedData && (
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>Patient Summary</CardTitle>
+              <CardDescription>
+                Review of submitted information
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div><strong>Full Name:</strong> {submittedData.fullName}</div>
+              <div><strong>Guardian Name:</strong> {submittedData.guardianName}</div>
+              <div><strong>Age:</strong> {submittedData.age}</div>
+              <div><strong>Gender:</strong> {submittedData.gender}</div>
+              <div><strong>Address:</strong> {submittedData.street}, {submittedData.city}, {submittedData.state} - {submittedData.pinCode}</div>
+              <div><strong>Medical Conditions:</strong> {submittedData.medicalConditions || <em>None</em>}</div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
-  )
+  );
 }
