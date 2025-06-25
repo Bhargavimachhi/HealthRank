@@ -7,11 +7,10 @@ export const addReportToPatient = async (req, res) => {
     let { error } = reportSchemaValidation.validate(req.body);
 
     if (error) {
-      console.log(error);
       return res.status(400).json({ message: error.details[0].message });
     }
-    let patientId = req.body.patient;
-    let patient = await Patient.findById(patientId);
+    let {id} = req.params;
+    let patient = await Patient.findById(id);
 
     if (!patient) {
       return res.status(400).json({ message: "Patient Does not exist" });
@@ -30,7 +29,6 @@ export const addReportToPatient = async (req, res) => {
       });
     return;
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ message: "Internal Server Error", err });
   }
 };

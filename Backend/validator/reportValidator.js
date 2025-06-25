@@ -21,7 +21,8 @@ const reportSchemaValidation = joi.object({
     .string()
     .valid("critical", "abnormal", "stable", "normal")
     .required(),
-  date: joi.date().iso().required(),
+  file : joi.string(),
+  remarks : joi.string()
 });
 
 export default reportSchemaValidation;

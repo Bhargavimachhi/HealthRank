@@ -4,7 +4,7 @@ import { addReportToPatient } from "../controller/reportController.js";
 const patientRouter = express.Router();
 
 patientRouter.post("/add", addPatient);
-patientRouter.post("/upload-report", addReportToPatient);
+patientRouter.post("/:id/upload-report", addReportToPatient);
 patientRouter.post("/email", getPatientUsingEmail)
 
 export default patientRouter;
