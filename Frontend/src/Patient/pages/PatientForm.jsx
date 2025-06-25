@@ -400,7 +400,7 @@ export default function PatientFormPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-4">
       <div className="flex items-center justify-center space-x-3 mb-8">
         <img
-          src="./src/assets/health rank logo.png"
+          src="/src/assets/health rank logo.png"
           alt="Health Rank Logo"
           className="h-12 w-auto object-contain"
         />
