@@ -9,14 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Phone, Shield, Mail } from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +28,9 @@ export default function AuthPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // 👈 new
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSendOTP = (e) => {
     e.preventDefault();
@@ -70,7 +70,61 @@ export default function AuthPage() {
     }, 1000);
   };
 
-  const handleEmailAuth = (e) => {
+  const handlePatientEmailSignup = async () => {
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/signup/email-password`,
+        {
+          email: email,
+          password: password,
+        }
+      );
+      if (res.status == 200) {
+        localStorage.setItem(
+          "healthRankAuth",
+          JSON.stringify({
+            email: email,
+            isAuthenticated: true,
+          })
+        );
+        navigate("/patient-form");
+      } else {
+        toast.error("Email is already Registered");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Email is already Registered");
+    }
+  };
+
+  const handlePatientEmailLogin = async () => {
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/login/email-password`,
+        {
+          email: email,
+          password: password,
+        }
+      );
+      if (res.status == 200) {
+        localStorage.setItem(
+          "healthRankAuth",
+          JSON.stringify({
+            email: email,
+            isAuthenticated: true,
+          })
+        );
+        navigate("/patient-details");
+      } else {
+        toast.error("Email is already Registered");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Email / Password is not valid");
+    }
+  };
+
+  const handleEmailAuth = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -79,13 +133,11 @@ export default function AuthPage() {
       return;
     }
 
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("isAuthenticated", "true");
-      window.location.href = isSignup ? "/patient-form" : "/homepage";
-    }, 1000);
+    if (isSignup) {
+      handlePatientEmailSignup();
+    } else {
+      handlePatientEmailLogin();
+    }
   };
 
   const resetForm = () => {
@@ -112,7 +164,9 @@ export default function AuthPage() {
               </div>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">HealthTriage</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            HealthTriage
+          </h1>
           <p className="text-gray-600">Smart Patient Care & Assessment</p>
         </div>
 
@@ -186,7 +240,9 @@ export default function AuthPage() {
                       placeholder="Enter 10-digit mobile number"
                       value={mobileNumber}
                       onChange={(e) =>
-                        setMobileNumber(e.target.value.replace(/\D/g, "").slice(0, 10))
+                        setMobileNumber(
+                          e.target.value.replace(/\D/g, "").slice(0, 10)
+                        )
                       }
                       className="pl-10 h-12"
                     />
@@ -210,11 +266,17 @@ export default function AuthPage() {
                       className="pl-10 h-12 text-center text-lg tracking-widest"
                     />
                   </div>
-                  <p className="text-sm text-gray-600">OTP sent to +91 {mobileNumber}</p>
+                  <p className="text-sm text-gray-600">
+                    OTP sent to +91 {mobileNumber}
+                  </p>
                   <Button className="w-full h-12" disabled={isLoading}>
                     {isLoading ? "Verifying..." : "Verify OTP"}
                   </Button>
-                  <Button variant="outline" className="w-full h-12" onClick={resetForm}>
+                  <Button
+                    variant="outline"
+                    className="w-full h-12"
+                    onClick={resetForm}
+                  >
                     Change Mobile Number
                   </Button>
                 </form>

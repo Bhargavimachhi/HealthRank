@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import patientRouter from "./routes/patientRoutes.js";
+import authRouter from "./routes/authenticationRoutes.js";
 
 dotenv.config();
 
@@ -29,3 +30,4 @@ app.listen(PORT, async () => {
 });
 
 app.use("/patient", patientRouter);
+app.use("/" , authRouter);
