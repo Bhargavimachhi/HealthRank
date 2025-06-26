@@ -22,12 +22,30 @@ export const addReportToPatient = async (req, res) => {
       .save()
       .then(async () => {
         await patient.save();
-        return res.status(200).json({ message: "success" });
+        return res.status(200).json({ message: "success",reportId: report._id  });
       })
       .catch((err) => {
         return res.status(400).json({ message: "Error Occured", err });
       });
     return;
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", err });
+  }
+};
+
+export const getReportById = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+    if (!reportId) {
+      return res.status(400).json({ message: "Report ID is required" });
+    }
+
+    const report = await Report.findById(reportId);
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    return res.status(200).json(report);
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }

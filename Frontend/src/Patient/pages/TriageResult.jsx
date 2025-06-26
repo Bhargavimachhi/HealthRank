@@ -16,11 +16,38 @@ import {
   Plus,
   Activity,
 } from "lucide-react";
+import { useParams } from "react-router";
+import axios from "axios";
 
 export default function TriageResultPage() {
-  // Simulate fetching triage result from backend
+  const report = useParams();
+  const reportId = report.reportId;
+
   const [triageResult, setTriageResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+
+   useEffect(() => {
+    const fetchResult = async () => {
+    
+      setIsLoading(true);
+     
+      try {
+       
+        const res = await axios.get(`http://localhost:5000/patient/report/${reportId}`);
+    
+        console.log("Report data:", res.data);
+        setTriageResult(res.data);
+      } catch (err) {
+        console.error("Error fetching report:", err);
+        setTriageResult(null);
+      
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchResult();
+  }, [reportId]);
 
   // Simulated backend response
   const backendResult = {
@@ -44,15 +71,9 @@ export default function TriageResultPage() {
     __v: 0,
   };
 
-  useEffect(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setTriageResult(backendResult);
-      setIsLoading(false);
-    }, 1200);
-  }, []);
+ 
 
-  // Map triage level to color/icon
+ 
   const getTriageVisuals = (level) => {
     if (!level) return { color: "bg-gray-400", icon: <Clock className="h-6 w-6 text-white" />, label: "Unknown" };
     if (level.toLowerCase().includes("high"))

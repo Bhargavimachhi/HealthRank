@@ -264,10 +264,10 @@ export default function ReportUploadPage() {
           Has_kidney_problems: answers.Has_kidney_problems,
           Is_taking_diabetes_medicine_regularly: answers.Is_taking_diabetes_medicine_regularly,
         };
-        console.log("BloodSugar Object:", bloodSugarObj);
+        
 
         const res = await axios.post("http://127.0.0.1:8000/triage_classify/Blood_sugar", bloodSugarObj);
-        console.log("Blood Sugar Triage Result:", res.data);
+        
         const res1 =  await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
       patient: userData._id,
       type: formData.reportType,
@@ -275,7 +275,8 @@ export default function ReportUploadPage() {
       result: res.data ,
       triageLevel: "critical", 
     });
-    window.location.href = `/${res.data.reportId}/triage-result`;
+    console.log("Report uploaded successfully:", res1.data);
+    window.location.href = `/${res1.data.reportId}/triage-result`;
       } catch (err) {
         setError("Failed to build Blood Sugar object.");
         console.error(err);
