@@ -19,10 +19,13 @@ import {
 } from "lucide-react";
 import { useParams } from "react-router";
 import axios from "axios";
+import { useUserContext } from "../../../context/userContext";
 
 export default function TriageResultPage() {
   const report = useParams();
   const reportId = report.reportId;
+ const { userData } = useUserContext();
+ 
 
   const [triageResult, setTriageResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -209,14 +212,14 @@ export default function TriageResultPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button className="h-16 flex-col gap-2" onClick={() => window.location.href = "/home"}>
+                  <Button className="h-16 flex-col gap-2" onClick={() => window.location.href = "/patient"}>
                     <Home className="h-6 w-6" />
                     Back to Homepage
                   </Button>
                   <Button
                     variant="outline"
                     className="h-16 flex-col gap-2"
-                    onClick={() => window.location.href = "/report-upload"}
+                    onClick={() => window.location.href = `/patient/${userData._id}/report-upload`}
                   >
                     <Plus className="h-6 w-6" />
                     Upload Another Report
