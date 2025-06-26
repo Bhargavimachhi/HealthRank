@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,10 +44,7 @@ export default function ReportUploadPage() {
   const [formData, setFormData] = useState({
     reportType: "",
     reportFile: null,
-    symptoms: "",
-    symptomDuration: "",
-    painScale: [5],
-    medications: [],
+    // Dynamic fields will be added here
   });
 
   const reportTypes = [
@@ -58,18 +55,72 @@ export default function ReportUploadPage() {
     { value: "electrolyte", label: "Serum Electrolytes Report", icon: "⚡" },
   ];
 
-  const commonMedications = [
-    "Paracetamol",
-    "Ibuprofen",
-    "Aspirin",
-    "Metformin",
-    "Lisinopril",
-    "Amlodipine",
-    "Atorvastatin",
-    "Omeprazole",
-    "Levothyroxine",
-    "Metoprolol",
-  ];
+  // Two questions for each report type
+ // ...existing code...
+  // Questionnaire for each report type
+  const questionnaires = {
+    bloodCount: [
+      { name: "symptoms", label: "Describe Symptoms", type: "textarea", required: true },
+      { name: "recentInfection", label: "Recent Infection?", type: "checkbox", required: false },
+    ],
+    serumCreatinine: [
+      { name: "symptoms", label: "Describe Symptoms", type: "textarea", required: true },
+      { name: "urineOutput", label: "Urine Output (ml/day)", type: "number", required: true },
+    ],
+    bloodSugar: [
+      {
+        name: "Hours_since_symptom_started",
+        label: "Hours Since Symptom Started",
+        type: "number",
+        required: false,
+      },
+      {
+        name: "Feeling_weak_or_tired",
+        label: "Feeling Weak or Tired?",
+        type: "checkbox",
+        required: false,
+      },
+      {
+        name: "Vision_issues_or_confused",
+        label: "Vision Issues or Feeling Confused?",
+        type: "checkbox",
+        required: false,
+      },
+      {
+        name: "Heart_disease_history",
+        label: "History of Heart Disease?",
+        type: "checkbox",
+        required: false,
+      },
+      {
+        name: "Has_hypertension",
+        label: "Has Hypertension?",
+        type: "checkbox",
+        required: false,
+      },
+      {
+        name: "Has_kidney_problems",
+        label: "Has Kidney Problems?",
+        type: "checkbox",
+        required: false,
+      },
+      {
+        name: "Is_taking_diabetes_medicine_regularly",
+        label: "Taking Diabetes Medicine Regularly?",
+        type: "checkbox",
+        required: false,
+      },
+    ],
+    urine: [
+      { name: "color", label: "Urine Color", type: "text", required: true },
+      { name: "painfulUrination", label: "Painful Urination?", type: "checkbox", required: false },
+    ],
+    electrolyte: [
+      { name: "symptoms", label: "Describe Symptoms", type: "textarea", required: true },
+      { name: "recentVomiting", label: "Recent Vomiting?", type: "checkbox", required: false },
+    ],
+  };
+
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -97,64 +148,148 @@ export default function ReportUploadPage() {
     }
   };
 
-  const handleMedicationChange = (medication, checked) => {
-    setFormData((prev) => ({
-      ...prev,
-      medications: checked
-        ? [...prev.medications, medication]
-        : prev.medications.filter((m) => m !== medication),
-    }));
+  // Render dynamic questionnaire fields
+  const renderDynamicFields = () => {
+    const fields = questionnaires[formData.reportType] || [];
+    return fields.map((field) => {
+      if (field.type === "textarea") {
+        return (
+          <div key={field.name} className="space-y-2">
+            <Label htmlFor={field.name}>{field.label}{field.required && " *"}</Label>
+            <Textarea
+              id={field.name}
+              value={formData[field.name] || ""}
+              onChange={e => setFormData(prev => ({ ...prev, [field.name]: e.target.value }))}
+              required={field.required}
+            />
+          </div>
+        );
+      }
+      if (field.type === "checkbox") {
+        return (
+          <div key={field.name} className="flex items-center space-x-2">
+            <Checkbox
+              id={field.name}
+              checked={!!formData[field.name]}
+              onCheckedChange={checked => setFormData(prev => ({ ...prev, [field.name]: checked }))}
+            />
+            <Label htmlFor={field.name}>{field.label}</Label>
+          </div>
+        );
+      }
+      if (field.type === "number" || field.type === "text") {
+        return (
+          <div key={field.name} className="space-y-2">
+            <Label htmlFor={field.name}>{field.label}{field.required && " *"}</Label>
+            <Input
+              id={field.name}
+              type={field.type}
+              value={formData[field.name] || ""}
+              onChange={e => setFormData(prev => ({ ...prev, [field.name]: e.target.value }))}
+              required={field.required}
+            />
+          </div>
+        );
+      }
+      return null;
+    });
   };
 
-  const calculateProgress = () => {
-    let progress = 0;
-    if (formData.reportType) progress += 25;
-    if (formData.reportFile) progress += 25;
-    if (formData.symptoms) progress += 25;
-    if (formData.symptomDuration) progress += 25;
-    return progress;
+  // Validate required dynamic fields
+  const validateDynamicFields = () => {
+    const fields = questionnaires[formData.reportType] || [];
+    for (const field of fields) {
+      if (field.required && !formData[field.name]) {
+        setError(`Please fill: ${field.label}`);
+        return false;
+      }
+    }
+    return true;
   };
 
+  // Submission logic: send only relevant answers
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    if (!formData.reportType) {
-      setError("Please select a report type");
-      return;
+  if (!formData.reportType) {
+    setError("Please select a report type");
+    return;
+  }
+  if (!formData.reportFile) {
+    setError("Please upload a report file");
+    return;
+  }
+  if (!validateDynamicFields()) {
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const reportIndex = (userData.reports?.[formData.reportType]?.length || 0) + 1;
+    await uploadFile(
+      formData.reportFile,
+      `/patient/${userData._id}/${formData.reportType}/${reportIndex}`
+    );
+    const url = await fetchFile(
+      `/patient/${userData._id}/${formData.reportType}/${reportIndex}`
+    );
+    console.log("File uploaded successfully:", url);
+
+    // Prepare only the answers for this report type
+    const answers = {};
+    (questionnaires[formData.reportType] || []).forEach((q) => {
+      if (formData.reportType === "bloodSugar" && q.type === "checkbox") {
+        answers[q.name] = formData[q.name] ? "yes" : "no";
+      } else {
+        answers[q.name] = formData[q.name];
+      }
+    });
+
+    let bloodSugarObj = null;
+    if (formData.reportType === "bloodSugar") {
+      try {
+        bloodSugarObj = {
+          Patient_id: userData._id,
+          Age: 17,
+          Sex: "Male",
+          S3_URL: url,
+          Fasting_blood_glucose_mg_dL: 12.3,
+          Hours_since_symptom_started: Number(answers.Hours_since_symptom_started),
+          Feeling_weak_or_tired: answers.Feeling_weak_or_tired,
+          Vision_issues_or_confused: answers.Vision_issues_or_confused,
+          Heart_disease_history: answers.Heart_disease_history,
+          Has_hypertension: answers.Has_hypertension,
+          Has_kidney_problems: answers.Has_kidney_problems,
+          Is_taking_diabetes_medicine_regularly: answers.Is_taking_diabetes_medicine_regularly,
+        };
+        console.log("BloodSugar Object:", bloodSugarObj);
+
+        const res = await axios.post("http://127.0.0.1:8000/triage_classify/Blood_sugar", bloodSugarObj);
+        console.log("Blood Sugar Triage Result:", res.data);
+        const res1 =  await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
+      patient: userData._id,
+      type: formData.reportType,
+      file: url,
+      result: res.data ,
+      triageLevel: "critical", 
+    });
+    window.location.href = `/${res.data.reportId}/triage-result`;
+      } catch (err) {
+        setError("Failed to build Blood Sugar object.");
+        console.error(err);
+      }
     }
 
-    if (!formData.reportFile) {
-      setError("Please upload a report file");
-      return;
-    }
-
-    if (!formData.symptoms.trim()) {
-      setError("Please describe your symptoms");
-      return;
-    }
-
-    if (!formData.symptomDuration.trim()) {
-      setError("Please specify symptom duration");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      await uploadFile(formData.reportFile, `/patient/${userData._id}/${formData.reportType}/${userData.reports[formData.reportType].length+1}`);
-      const url = await fetchFile(`/patient/${userData._id}/${formData.reportType}/${userData.reports[formData.reportType].length+1}`);
-      const res =await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
-        patient : userData._id,
-        type : formData.reportType,
-        file : url,
-        result : {temp : "temp"},
-        triageLevel : "normal" 
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+   
+  } catch (err) {
+    setError("Submission failed.");
+    console.error(err);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const nextStep = () => {
     if (currentStep === 1 && (!formData.reportType || !formData.reportFile)) {
@@ -200,10 +335,10 @@ export default function ReportUploadPage() {
                 </CardTitle>
                 <CardDescription>
                   Step {currentStep} of 2 -{" "}
-                  {currentStep === 1 ? "Upload Report" : "Describe Symptoms"}
+                  {currentStep === 1 ? "Upload Report" : "Answer Questions"}
                 </CardDescription>
               </div>
-              <Button variant="ghost">
+              <Button variant="ghost" onClick={prevStep} disabled={currentStep === 1}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
@@ -311,137 +446,7 @@ export default function ReportUploadPage() {
 
               {currentStep === 2 && (
                 <div className="space-y-6">
-                  {/* Symptoms Description */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Activity className="h-5 w-5 text-blue-600" />
-                      Describe Your Symptoms
-                    </h3>
-                    <div className="space-y-2">
-                      <Label htmlFor="symptoms">Current Symptoms *</Label>
-                      <Textarea
-                        id="symptoms"
-                        placeholder="Please describe your current symptoms in detail..."
-                        value={formData.symptoms}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            symptoms: e.target.value,
-                          }))
-                        }
-                        rows={4}
-                        className="resize-none"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Symptom Duration */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Clock className="h-5 w-5 text-blue-600" />
-                      Symptom Duration
-                    </h3>
-                    <div className="space-y-2">
-                      <Label htmlFor="duration">
-                        How long have you been experiencing these symptoms? *
-                      </Label>
-                      <Select
-                        value={formData.symptomDuration}
-                        onValueChange={(value) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            symptomDuration: value,
-                          }))
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select duration" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="less-than-day">
-                            Less than a day
-                          </SelectItem>
-                          <SelectItem value="1-3-days">1-3 days</SelectItem>
-                          <SelectItem value="4-7-days">4-7 days</SelectItem>
-                          <SelectItem value="1-2-weeks">1-2 weeks</SelectItem>
-                          <SelectItem value="2-4-weeks">2-4 weeks</SelectItem>
-                          <SelectItem value="more-than-month">
-                            More than a month
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* Pain Scale */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">
-                      Pain Level (Optional)
-                    </h3>
-                    <div className="space-y-4">
-                      <Label>
-                        Rate your pain level from 1 (no pain) to 10 (severe
-                        pain)
-                      </Label>
-                      <div className="px-4">
-                        <Slider
-                          value={formData.painScale}
-                          onValueChange={(value) =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              painScale: value,
-                            }))
-                          }
-                          max={10}
-                          min={1}
-                          step={1}
-                          className="w-full"
-                        />
-                        <div className="flex justify-between text-sm text-gray-500 mt-2">
-                          <span>1 - No pain</span>
-                          <span className="font-medium text-blue-600">
-                            Current: {formData.painScale[0]}
-                          </span>
-                          <span>10 - Severe pain</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Current Medications */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Pill className="h-5 w-5 text-blue-600" />
-                      Current Medications (Optional)
-                    </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {commonMedications.map((medication) => (
-                        <div
-                          key={medication}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={medication}
-                            checked={formData.medications.includes(medication)}
-                            onCheckedChange={(checked) =>
-                              handleMedicationChange(medication, checked)
-                            }
-                          />
-                          <Label htmlFor={medication} className="text-sm">
-                            {medication}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                    {formData.medications.length > 0 && (
-                      <div className="bg-blue-50 p-3 rounded-lg">
-                        <p className="text-sm text-blue-800">
-                          Selected: {formData.medications.join(", ")}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                  {renderDynamicFields()}
                 </div>
               )}
 
@@ -452,9 +457,9 @@ export default function ReportUploadPage() {
                     <Button type="button" variant="outline" className="flex-1">
                       Cancel
                     </Button>
-                    <Button type="button" className="flex-1" onClick={nextStep}>
-                      Next: Symptoms
-                    </Button>
+                    <button type="button" className="flex-1 bg-gradient-to-r from-blue-500 to-green-400 hover:from-blue-600 hover:to-green-500 text-white font-semibold rounded-md px-6 py-2 shadow transition-colors duration-200" onClick={nextStep}>
+  Next: Questions
+</button>
                   </>
                 ) : (
                   <>

@@ -32,7 +32,7 @@ export default function HackerTemplateSuccess() {
         <Route path="/login/doctor" element={<DoctorLoginPage />} />
         <Route path="/login/patient" element={<PatientLoginPage />} />
         
-        <Route path="/triage-result" element={<TriageResult />} />
+        <Route path=":reportId/triage-result" element={<TriageResult />} />
         <Route path="/patient-details" element={<PatientDetailsPage />} />
 
         <Route path="/dashboard" element={<DashboardPage />} />

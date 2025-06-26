@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Separator } from "@/components/ui/separator"
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
 import {
   Stethoscope,
   AlertTriangle,
@@ -16,129 +15,54 @@ import {
   Home,
   Plus,
   Activity,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function TriageResultPage() {
-  // Dummy report data
-  const dummyReport = {
-    reportType: "cbc",
-    symptoms: "Mild headache, fatigue",
-    symptomDuration: "1-3-days",
-    painScale: [3],
-    medications: ["Paracetamol", "Vitamin D"],
-    uploadDate: "2024-06-20T10:30:00Z",
-    fileName: "cbc_report_june.pdf",
-  }
+  // Simulate fetching triage result from backend
+  const [triageResult, setTriageResult] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [reportData, setReportData] = useState(null)
-  const [triageResult, setTriageResult] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  // Simulated backend response
+  const backendResult = {
+    _id: "685cbf83a49afaf84a74708f",
+    patient: "685ca7eb3072f2011b2bd81d",
+    type: "bloodSugar",
+    result: {
+      Triage_level: "High-Risk",
+      Reason: [
+        "Very high blood sugar detected",
+        "Symptoms indicate possible diabetic emergency",
+        "History of heart disease",
+        "Not taking diabetes medication regularly",
+      ],
+      actions: "Consult a doctor immediately.",
+    },
+    date: "2025-06-26T03:11:18.512+00:00",
+    remarks: null,
+    triageLevel: "critical",
+    file: "https://firebasestorage.googleapis.com/v0/b/videohosting-86bc3.appspot.com/o/patient%2F685ca7eb3072f2011b2bd81d%2FbloodSugar%2F1?alt=media&token=991d0d3b-f926-435a-96a3-6e00736ec561",
+    __v: 0,
+  };
 
   useEffect(() => {
-    // Use dummy report instead of fetching from storage
-    setReportData(dummyReport)
-
+    // Simulate loading
     setTimeout(() => {
-      const result = generateTriageResult(dummyReport)
-      setTriageResult(result)
-      setIsLoading(false)
-    }, 2000)
-  }, [])
+      setTriageResult(backendResult);
+      setIsLoading(false);
+    }, 1200);
+  }, []);
 
-  const generateTriageResult = (report) => {
-    const painLevel = report.painScale[0]
-    const symptoms = report.symptoms.toLowerCase()
-    const duration = report.symptomDuration
+  // Map triage level to color/icon
+  const getTriageVisuals = (level) => {
+    if (!level) return { color: "bg-gray-400", icon: <Clock className="h-6 w-6 text-white" />, label: "Unknown" };
+    if (level.toLowerCase().includes("high"))
+      return { color: "bg-red-500", icon: <AlertTriangle className="h-6 w-6 text-white" />, label: "High Priority" };
+    if (level.toLowerCase().includes("medium"))
+      return { color: "bg-yellow-500", icon: <Clock className="h-6 w-6 text-white" />, label: "Medium Priority" };
+    return { color: "bg-green-500", icon: <CheckCircle className="h-6 w-6 text-white" />, label: "Low Priority" };
+  };
 
-    if (
-      symptoms.includes("chest pain") ||
-      symptoms.includes("difficulty breathing") ||
-      symptoms.includes("severe headache") ||
-      painLevel >= 8 ||
-      symptoms.includes("blood")
-    ) {
-      return {
-        level: "High",
-        color: "bg-red-500",
-        icon: <AlertTriangle className="h-6 w-6 text-white" />,
-        reasons: [
-          "High pain level reported (8+/10)",
-          "Symptoms may indicate serious condition",
-          "Immediate medical attention recommended",
-        ],
-        recommendations: [
-          "Go to Emergency Room immediately",
-          "Call emergency services if symptoms worsen",
-          "Do not delay seeking medical care",
-        ],
-        urgency: "Immediate attention required",
-      }
-    }
-
-    if (
-      painLevel >= 5 ||
-      symptoms.includes("fever") ||
-      symptoms.includes("nausea") ||
-      duration.includes("week") ||
-      symptoms.includes("persistent")
-    ) {
-      return {
-        level: "Medium",
-        color: "bg-yellow-500",
-        icon: <Clock className="h-6 w-6 text-white" />,
-        reasons: [
-          "Moderate pain level or concerning symptoms",
-          "Symptoms persisting for extended period",
-          "Medical evaluation recommended",
-        ],
-        recommendations: [
-          "Schedule appointment with physician within 24-48 hours",
-          "Monitor symptoms closely",
-          "Seek immediate care if symptoms worsen",
-        ],
-        urgency: "Medical consultation within 24-48 hours",
-      }
-    }
-
-    return {
-      level: "Low",
-      color: "bg-green-500",
-      icon: <CheckCircle className="h-6 w-6 text-white" />,
-      reasons: ["Mild symptoms reported", "Low pain level", "Likely manageable with self-care"],
-      recommendations: [
-        "Continue monitoring symptoms",
-        "Practice self-care measures",
-        "Schedule routine follow-up if needed",
-        "Contact healthcare provider if symptoms persist or worsen",
-      ],
-      urgency: "Routine care or self-management",
-    }
-  }
-
-  const getReportTypeLabel = (type) => {
-    const types = {
-      cbc: "Complete Blood Count Report",
-      creatinine: "Serum Creatinine Report",
-      "blood-sugar": "Random Blood Sugar",
-      urine: "Urine Routine Micro Report",
-      electrolytes: "Serum Electrolytes Report",
-    }
-    return types[type] || type
-  }
-
-  const getDurationLabel = (duration) => {
-    const durations = {
-      "less-than-day": "Less than a day",
-      "1-3-days": "1-3 days",
-      "4-7-days": "4-7 days",
-      "1-2-weeks": "1-2 weeks",
-      "2-4-weeks": "2-4 weeks",
-      "more-than-month": "More than a month",
-    }
-    return durations[duration] || duration
-  }
-
-  if (isLoading || !reportData) {
+  if (isLoading || !triageResult) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
         <div className="text-center">
@@ -147,8 +71,11 @@ export default function TriageResultPage() {
           <p className="text-gray-600">Our AI is processing your medical data...</p>
         </div>
       </div>
-    )
+    );
   }
+
+  const { result, triageLevel, file, type, date } = triageResult;
+  const visuals = getTriageVisuals(result?.Triage_level);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-4">
@@ -171,64 +98,67 @@ export default function TriageResultPage() {
                 <CardDescription>AI-powered health risk evaluation</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {triageResult && (
-                  <>
-                    <div className="text-center">
-                      <div
-                        className={`inline-flex items-center gap-3 px-6 py-4 rounded-full ${triageResult.color} text-white mb-4`}
-                      >
-                        {triageResult.icon}
-                        <span className="text-2xl font-bold">{triageResult.level} Priority</span>
+                <div className="text-center">
+                  <div
+                    className={`inline-flex items-center gap-3 px-6 py-4 rounded-full ${visuals.color} text-white mb-4`}
+                  >
+                    {visuals.icon}
+                    <span className="text-2xl font-bold">{visuals.label}</span>
+                  </div>
+                  <p className="text-lg text-gray-700 font-medium capitalize">
+                    {result?.Triage_level?.replace("-", " ") || "Unknown"}
+                  </p>
+                  <p className="text-gray-500 text-sm mt-1">
+                    {triageLevel === "critical"
+                      ? "Immediate medical attention recommended"
+                      : triageLevel === "warning"
+                      ? "Consult a doctor soon"
+                      : "Routine care or self-management"}
+                  </p>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Activity className="h-5 w-5 text-blue-600" />
+                    Reasons for This Assessment
+                  </h3>
+                  <ul className="space-y-2">
+                    {(result?.Reason || []).map((reason, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <div className="h-2 w-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-gray-700">{reason}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    Recommended Next Steps
+                  </h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-3">
+                      <div className="h-6 w-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-green-600 text-sm font-medium">1</span>
                       </div>
-                      <p className="text-lg text-gray-700 font-medium">{triageResult.urgency}</p>
-                    </div>
+                      <span className="text-gray-700">{result?.actions}</span>
+                    </li>
+                  </ul>
+                </div>
 
-                    <Separator />
-
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <Activity className="h-5 w-5 text-blue-600" />
-                        Reasons for This Assessment
-                      </h3>
-                      <ul className="space-y-2">
-                        {triageResult.reasons.map((reason, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <div className="h-2 w-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                            <span className="text-gray-700">{reason}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <Separator />
-
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <CheckCircle className="h-5 w-5 text-green-600" />
-                        Recommended Next Steps
-                      </h3>
-                      <ul className="space-y-3">
-                        {triageResult.recommendations.map((recommendation, index) => (
-                          <li key={index} className="flex items-start gap-3">
-                            <div className="h-6 w-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <span className="text-green-600 text-sm font-medium">{index + 1}</span>
-                            </div>
-                            <span className="text-gray-700">{recommendation}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {triageResult.level === "High" && (
-                      <Alert className="border-red-200 bg-red-50">
-                        <AlertTriangle className="h-4 w-4 text-red-600" />
-                        <AlertDescription className="text-red-800">
-                          <strong>Important:</strong> This assessment indicates you may need immediate medical
-                          attention. Please contact emergency services or visit the nearest emergency room.
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                  </>
+                {triageLevel === "critical" && (
+                  <Alert className="border-red-200 bg-red-50">
+                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <AlertDescription className="text-red-800">
+                      <strong>Important:</strong> This assessment indicates you may need immediate medical
+                      attention. Please contact emergency services or visit the nearest emergency room.
+                    </AlertDescription>
+                  </Alert>
                 )}
               </CardContent>
             </Card>
@@ -275,56 +205,25 @@ export default function TriageResultPage() {
               <CardContent className="space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-gray-600">Report Type</Label>
-                  <p className="text-gray-900">{getReportTypeLabel(reportData.reportType)}</p>
+                  <p className="text-gray-900 capitalize">{type}</p>
                 </div>
 
                 <div>
                   <Label className="text-sm font-medium text-gray-600">File Uploaded</Label>
-                  <p className="text-gray-900 text-sm">{reportData.fileName}</p>
+                  <a
+                    href={file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline break-all"
+                  >
+                    View Report
+                  </a>
                 </div>
 
                 <div>
                   <Label className="text-sm font-medium text-gray-600">Upload Date</Label>
-                  <p className="text-gray-900">{new Date(reportData.uploadDate).toLocaleDateString()}</p>
+                  <p className="text-gray-900">{new Date(date).toLocaleDateString()}</p>
                 </div>
-
-                <Separator />
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-600">Symptoms</Label>
-                  <p className="text-gray-900 text-sm">{reportData.symptoms}</p>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-600">Duration</Label>
-                  <p className="text-gray-900">{getDurationLabel(reportData.symptomDuration)}</p>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-600">Pain Level</Label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-900 font-medium">{reportData.painScale[0]}/10</span>
-                    <div className="flex-1 bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full"
-                        style={{ width: `${(reportData.painScale[0] / 10) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-
-                {reportData.medications.length > 0 && (
-                  <div>
-                    <Label className="text-sm font-medium text-gray-600">Current Medications</Label>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {reportData.medications.map((med, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {med}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </CardContent>
             </Card>
 
@@ -344,7 +243,7 @@ export default function TriageResultPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function Label({ className, children, ...props }) {
@@ -352,5 +251,5 @@ function Label({ className, children, ...props }) {
     <label className={`text-sm font-medium ${className || ""}`} {...props}>
       {children}
     </label>
-  )
+  );
 }
