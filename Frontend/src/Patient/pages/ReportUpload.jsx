@@ -55,17 +55,20 @@ export default function ReportUploadPage() {
     { value: "electrolyte", label: "Serum Electrolytes Report", icon: "⚡" },
   ];
 
-  // Two questions for each report type
- // ...existing code...
-  // Questionnaire for each report type
+
   const questionnaires = {
-    bloodCount: [
-      { name: "symptoms", label: "Describe Symptoms", type: "textarea", required: true },
-      { name: "recentInfection", label: "Recent Infection?", type: "checkbox", required: false },
-    ],
+     bloodCount: [
+    { name: "Feeling_weak_or_tired", label: "Feeling Weak or Tired?", type: "checkbox", required: false },
+    { name: "Bleeding_or_bruising_recovering_easily", label: "Bleeding or Bruising Easily?", type: "checkbox", required: false },
+    { name: "Fever", label: "Fever?", type: "checkbox", required: false },
+    { name: "Heart_disease_history", label: "History of Heart Disease?", type: "checkbox", required: false },
+    { name: "Has_hypertension", label: "Has Hypertension?", type: "checkbox", required: false },
+  ],
     serumCreatinine: [
-      { name: "symptoms", label: "Describe Symptoms", type: "textarea", required: true },
-      { name: "urineOutput", label: "Urine Output (ml/day)", type: "number", required: true },
+    { name: "Has_kidney_problems", label: "Has Kidney Problems?", type: "checkbox", required: false },
+    { name: "Swelling_in_legs_or_feet", label: "Swelling in Legs or Feet?", type: "checkbox", required: false },
+    { name: "Urination_colour_changes", label: "Urination Colour Changes?", type: "checkbox", required: false },
+    { name: "Diabetes_history", label: "Diabetes History?", type: "checkbox", required: false },
     ],
     bloodSugar: [
       {
@@ -112,12 +115,17 @@ export default function ReportUploadPage() {
       },
     ],
     urine: [
-      { name: "color", label: "Urine Color", type: "text", required: true },
-      { name: "painfulUrination", label: "Painful Urination?", type: "checkbox", required: false },
+     
+    { name: "Fever", label: "Fever?", type: "checkbox", required: false },
+    { name: "Pain_while_urinating", label: "Pain While Urinating?", type: "checkbox", required: false },
+    { name: "Lower_abdominal_pain", label: "Lower Abdominal Pain?", type: "checkbox", required: false },
     ],
     electrolyte: [
-      { name: "symptoms", label: "Describe Symptoms", type: "textarea", required: true },
-      { name: "recentVomiting", label: "Recent Vomiting?", type: "checkbox", required: false },
+   
+    { name: "Confusion_or_drowsiness", label: "Confusion or Drowsiness?", type: "checkbox", required: false },
+    { name: "Vomiting_or_dehydration", label: "Vomiting or Dehydration?", type: "checkbox", required: false },
+    { name: "Seizure_history", label: "Seizure History?", type: "checkbox", required: false },
+    { name: "Heart_disease_history", label: "History of Heart Disease?", type: "checkbox", required: false },
     ],
   };
 
@@ -207,7 +215,7 @@ export default function ReportUploadPage() {
     return true;
   };
 
-  // Submission logic: send only relevant answers
+ 
   const handleSubmit = async (e) => {
   e.preventDefault();
   setError("");
@@ -240,16 +248,18 @@ export default function ReportUploadPage() {
     // Prepare only the answers for this report type
     const answers = {};
     (questionnaires[formData.reportType] || []).forEach((q) => {
-      if (formData.reportType === "bloodSugar" && q.type === "checkbox") {
+      if (q.type === "checkbox") {
         answers[q.name] = formData[q.name] ? "yes" : "no";
       } else {
         answers[q.name] = formData[q.name];
       }
     });
 
-    let bloodSugarObj = null;
+   
+    
     if (formData.reportType === "bloodSugar") {
       try {
+         let bloodSugarObj = null;
         bloodSugarObj = {
           Patient_id: userData._id,
           Age: 17,
@@ -283,6 +293,137 @@ export default function ReportUploadPage() {
       }
     }
 
+    else if (formData.reportType === "bloodCount") {
+  try {
+    const bloodCountObj = {
+      Patient_id: userData._id,
+      Age: 17,
+      Sex: "Male",
+      S3_URL: url,
+      Hemoglobin_g_dL: 0.0,
+      White_blood_cell_count_10_3_uL: 0.0,
+      Platelet_count_10_3_uL: 0.0,
+      Red_blood_cell_count_10_6_uL: 0.0,
+      Feeling_weak_or_tired: answers.Feeling_weak_or_tired,
+      Bleeding_or_bruising_recovering_easily: answers.Bleeding_or_bruising_recovering_easily,
+      Fever: answers.Fever,
+      Heart_disease_history: answers.Heart_disease_history,
+      Has_hypertension: answers.Has_hypertension,
+    };
+
+    const res = await axios.post("http://127.0.0.1:8000/triage_classify/cbc", bloodCountObj);
+    console.log("Blood Count response:", res.data);
+
+    const res1 = await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
+      patient: userData._id,
+      type: formData.reportType,
+      file: url,
+      result: res.data,
+      triageLevel: res.data?.triageLevel || "critical",
+    });
+    window.location.href = `/${res1.data.reportId}/triage-result`;
+  } catch (err) {
+    setError("Failed to build Blood Count object.");
+    console.error(err);
+  }
+}
+
+else if (formData.reportType === "serumCreatinine") {
+  try {
+    const serumCreatinineObj = {
+      Patient_id: userData._id,
+      Age: 17,
+      Sex: "Male",
+      S3_URL: url,
+      Serum_creatinine_mg_dL: 0.0,
+      Has_kidney_problems: answers.Has_kidney_problems,
+      Swelling_in_legs_or_feet: answers.Swelling_in_legs_or_feet,
+      Urination_colour_changes: answers.Urination_colour_changes,
+      Diabetes_history: answers.Diabetes_history,
+      Urine_Frequency: "normal",
+    };
+
+    const res = await axios.post("http://localhost:8000/triage_classify/creatinine", serumCreatinineObj);
+
+    const res1 = await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
+      patient: userData._id,
+      type: formData.reportType,
+      file: url,
+      result: res.data,
+      triageLevel: res.data?.triageLevel || "critical",
+    });
+    window.location.href = `/${res1.data.reportId}/triage-result`;
+  } catch (err) {
+    setError("Failed to build Serum Creatinine object.");
+    console.error(err);
+  }
+}
+else if (formData.reportType === "urine") {
+  try {
+    const urineObj = {
+      Patient_id: userData._id,
+      Age: 17,
+      Sex: "Male",
+      S3_URL: url,
+      Urine_color: "Pale yellow",
+      Urine_protein: "absent",
+      Urine_glucose: "absent",  
+      Pus_cells_present: "absent",
+      Bacteria_presence: "absent",
+      Fever: answers.Fever,
+      Pain_while_urinating: answers.Pain_while_urinating,
+      Lower_abdominal_pain: answers.Lower_abdominal_pain,
+    };
+
+    const res = await axios.post("http://127.0.0.1:8000/triage_classify/urine", urineObj);
+
+    const res1 = await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
+      patient: userData._id,
+      type: formData.reportType,
+      file: url,
+      result: res.data,
+      triageLevel: res.data?.triageLevel || "critical",
+    });
+    window.location.href = `/${res1.data.reportId}/triage-result`;
+  } catch (err) {
+    setError("Failed to build Urine object.");
+    console.error(err);
+  }
+}
+
+else if (formData.reportType === "electrolyte") {
+  try {
+    const electrolyteObj = {
+      Patient_id: userData._id,
+      Age: 17,
+      Sex: "Male",
+      URL: url,
+      Sodium_mEq_L: 0.0,
+      Potassium_mEq_L: 0.0,
+      Chloride_mEq_L:   0.0,
+      Bicarbonate_mEq_L: 0.0,
+      Confusion_or_drowsiness: answers.Confusion_or_drowsiness,
+      Vomiting_or_dehydration: answers.Vomiting_or_dehydration,
+      Seizure_history: answers.Seizure_history,
+      Heart_disease_history: answers.Heart_disease_history,
+    };
+
+    const res = await axios.post("http://127.0.0.1:8000/triage_classify/electrolyte", electrolyteObj);
+
+    const res1 = await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
+      patient: userData._id,
+      type: formData.reportType,
+      file: url,
+      result: res.data,
+      triageLevel: res.data?.triageLevel || "critical",
+    });
+    window.location.href = `/${res1.data.reportId}/triage-result`;
+  } catch (err) {
+    setError("Failed to build Electrolyte object.");
+    console.error(err);
+  }
+}
+
    
   } catch (err) {
     setError("Submission failed.");
@@ -291,6 +432,8 @@ export default function ReportUploadPage() {
     setIsLoading(false);
   }
 };
+
+
 
   const nextStep = () => {
     if (currentStep === 1 && (!formData.reportType || !formData.reportFile)) {
