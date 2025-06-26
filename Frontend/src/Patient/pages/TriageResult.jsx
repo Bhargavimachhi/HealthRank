@@ -15,6 +15,7 @@ import {
   Home,
   Plus,
   Activity,
+  Loader2,
 } from "lucide-react";
 import { useParams } from "react-router";
 import axios from "axios";
@@ -25,23 +26,17 @@ export default function TriageResultPage() {
 
   const [triageResult, setTriageResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [translated, setTranslated] = useState(false);
 
-
-   useEffect(() => {
+  useEffect(() => {
     const fetchResult = async () => {
-    
       setIsLoading(true);
-     
       try {
-       
         const res = await axios.get(`http://localhost:5000/patient/report/${reportId}`);
-    
-        console.log("Report data:", res.data);
         setTriageResult(res.data);
       } catch (err) {
-        console.error("Error fetching report:", err);
         setTriageResult(null);
-      
       } finally {
         setIsLoading(false);
       }
@@ -49,31 +44,37 @@ export default function TriageResultPage() {
     fetchResult();
   }, [reportId]);
 
-  // Simulated backend response
-  const backendResult = {
-    _id: "685cbf83a49afaf84a74708f",
-    patient: "685ca7eb3072f2011b2bd81d",
-    type: "bloodSugar",
-    result: {
-      Triage_level: "High-Risk",
-      Reason: [
-        "Very high blood sugar detected",
-        "Symptoms indicate possible diabetic emergency",
-        "History of heart disease",
-        "Not taking diabetes medication regularly",
-      ],
-      actions: "Consult a doctor immediately.",
-    },
-    date: "2025-06-26T03:11:18.512+00:00",
-    remarks: null,
-    triageLevel: "critical",
-    file: "https://firebasestorage.googleapis.com/v0/b/videohosting-86bc3.appspot.com/o/patient%2F685ca7eb3072f2011b2bd81d%2FbloodSugar%2F1?alt=media&token=991d0d3b-f926-435a-96a3-6e00736ec561",
-    __v: 0,
+
+
+
+  const handleTranslate = async () => {
+    if (!triageResult) return;
+    setIsTranslating(true);
+    try {
+      const response = await axios.post("http://localhost:8000/translate", {
+        triage_level: triageResult.result.Triage_level,
+        reason: triageResult.result.Reason,
+        actions: triageResult.result.actions,
+        type: triageResult.type,
+      });
+      setTriageResult({
+        ...triageResult,
+        result: {
+          ...triageResult.result,
+          Triage_level: response.data.triage_level,
+          Reason: response.data.reason,
+          actions: response.data.actions,
+        },
+        type: response.data.type,
+      });
+      setTranslated(true);
+    } catch (err) {
+      alert("Translation failed. Please try again.");
+    } finally {
+      setIsTranslating(false);
+    }
   };
 
- 
-
- 
   const getTriageVisuals = (level) => {
     if (!level) return { color: "bg-gray-400", icon: <Clock className="h-6 w-6 text-white" />, label: "Unknown" };
     if (level.toLowerCase().includes("high"))
@@ -102,6 +103,24 @@ export default function TriageResultPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
+        
+          <Button
+            className="mb-4"
+            variant="outline"
+            onClick={handleTranslate}
+            disabled={isTranslating || translated}
+          >
+            {isTranslating ? (
+              <>
+                <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                Translating...
+              </>
+            ) : translated ? (
+              "Translated to Gujarati"
+            ) : (
+              "Translate to Gujarati"
+            )}
+          </Button>
           <div className="flex justify-center mb-4">
             <div className="bg-gradient-to-r from-blue-600 to-green-600 p-3 rounded-full">
               <Stethoscope className="h-8 w-8 text-white" />
