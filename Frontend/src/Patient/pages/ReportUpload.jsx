@@ -37,15 +37,34 @@ import axios from "axios";
 
 export default function ReportUploadPage() {
   const { userData } = useUserContext();
+ 
 
   const [isLoading, setIsLoading] = useState(false);
+  
   const [error, setError] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     reportType: "",
     reportFile: null,
-    // Dynamic fields will be added here
+   
   });
+
+  function countAgeFromBirthday(birthday) {
+    const birthDate = new Date(birthday);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    // Check if the birthday has occurred yet this year
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    return age;
+  }
 
   const reportTypes = [
     { value: "bloodCount", label: "Complete Blood Count Report", icon: "🩸" },
@@ -156,7 +175,7 @@ export default function ReportUploadPage() {
     }
   };
 
-  // Render dynamic questionnaire fields
+
   const renderDynamicFields = () => {
     const fields = questionnaires[formData.reportType] || [];
     return fields.map((field) => {
@@ -262,8 +281,8 @@ export default function ReportUploadPage() {
          let bloodSugarObj = null;
         bloodSugarObj = {
           Patient_id: userData._id,
-          Age: 17,
-          Sex: "Male",
+          Age: countAgeFromBirthday(userData.birthday),
+          Sex: userData.gender,
           S3_URL: url,
           Fasting_blood_glucose_mg_dL: 12.3,
           Hours_since_symptom_started: Number(answers.Hours_since_symptom_started),
@@ -283,7 +302,7 @@ export default function ReportUploadPage() {
       type: formData.reportType,
       file: url,
       result: res.data ,
-      triageLevel: "critical", 
+      triageLevel: res.data?.Triage_level || "Stable", 
     });
     console.log("Report uploaded successfully:", res1.data);
     window.location.href = `/${res1.data.reportId}/triage-result`;
@@ -297,8 +316,8 @@ export default function ReportUploadPage() {
   try {
     const bloodCountObj = {
       Patient_id: userData._id,
-      Age: 17,
-      Sex: "Male",
+      Age: countAgeFromBirthday(userData.birthday),
+      Sex: userData.gender,
       S3_URL: url,
       Hemoglobin_g_dL: 0.0,
       White_blood_cell_count_10_3_uL: 0.0,
@@ -319,7 +338,7 @@ export default function ReportUploadPage() {
       type: formData.reportType,
       file: url,
       result: res.data,
-      triageLevel: res.data?.triageLevel || "critical",
+     triageLevel: res.data?.Triage_level || "Stable", 
     });
     window.location.href = `/${res1.data.reportId}/triage-result`;
   } catch (err) {
@@ -332,8 +351,8 @@ else if (formData.reportType === "serumCreatinine") {
   try {
     const serumCreatinineObj = {
       Patient_id: userData._id,
-      Age: 17,
-      Sex: "Male",
+      Age: countAgeFromBirthday(userData.birthday),
+      Sex: userData.gender,
       S3_URL: url,
       Serum_creatinine_mg_dL: 0.0,
       Has_kidney_problems: answers.Has_kidney_problems,
@@ -350,7 +369,7 @@ else if (formData.reportType === "serumCreatinine") {
       type: formData.reportType,
       file: url,
       result: res.data,
-      triageLevel: res.data?.triageLevel || "critical",
+       triageLevel: res.data?.Triage_level || "Stable", 
     });
     window.location.href = `/${res1.data.reportId}/triage-result`;
   } catch (err) {
@@ -362,8 +381,8 @@ else if (formData.reportType === "urine") {
   try {
     const urineObj = {
       Patient_id: userData._id,
-      Age: 17,
-      Sex: "Male",
+      Age: countAgeFromBirthday(userData.birthday),
+      Sex: userData.gender,
       S3_URL: url,
       Urine_color: "Pale yellow",
       Urine_protein: "absent",
@@ -382,7 +401,7 @@ else if (formData.reportType === "urine") {
       type: formData.reportType,
       file: url,
       result: res.data,
-      triageLevel: res.data?.triageLevel || "critical",
+     triageLevel: res.data?.Triage_level || "Stable", 
     });
     window.location.href = `/${res1.data.reportId}/triage-result`;
   } catch (err) {
@@ -395,8 +414,8 @@ else if (formData.reportType === "electrolyte") {
   try {
     const electrolyteObj = {
       Patient_id: userData._id,
-      Age: 17,
-      Sex: "Male",
+      Age: countAgeFromBirthday(userData.birthday),
+      Sex: userData.gender,
       URL: url,
       Sodium_mEq_L: 0.0,
       Potassium_mEq_L: 0.0,
@@ -415,7 +434,7 @@ else if (formData.reportType === "electrolyte") {
       type: formData.reportType,
       file: url,
       result: res.data,
-      triageLevel: res.data?.triageLevel || "critical",
+      triageLevel: res.data?.Triage_level || "Stable", 
     });
     window.location.href = `/${res1.data.reportId}/triage-result`;
   } catch (err) {

@@ -64,6 +64,7 @@ export default function TriageResultPage() {
         ...triageResult,
         result: {
           ...triageResult.result,
+          Triage_level_original: triageResult.result.Triage_level,
           Triage_level: response.data.triage_level,
           Reason: response.data.reason,
           actions: response.data.actions,
@@ -100,7 +101,7 @@ export default function TriageResultPage() {
   }
 
   const { result, triageLevel, file, type, date } = triageResult;
-  const visuals = getTriageVisuals(result?.Triage_level);
+  const visuals = getTriageVisuals(result?.Triage_level_original || result?.Triage_level);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-4">

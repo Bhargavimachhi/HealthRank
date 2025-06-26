@@ -35,7 +35,7 @@ let reportSchema = new mongoose.Schema({
   triageLevel: {
     type: String,
     enum: {
-      values: ["critical", "abnormal", "stable", "normal"],
+      values: ["Critical", "High-Risk", "Low-Risk", "Stable"],
       message: "{VALUE} is not supported",
     },
     required: true,

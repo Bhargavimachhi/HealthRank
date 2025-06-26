@@ -19,7 +19,7 @@ const reportSchemaValidation = joi.object({
     .required(),
   triageLevel: joi
     .string()
-    .valid("critical", "abnormal", "stable", "normal")
+    .valid("Critical", "High-Risk", "Stable", "Low-Risk")
     .required(),
   file : joi.string(),
   remarks : joi.string()
