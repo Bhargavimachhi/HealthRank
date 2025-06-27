@@ -15,8 +15,10 @@ import { Phone, Shield, Mail } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { useUserContext } from "../../../context/userContext";
 
 export default function PatientLoginPage() {
+  const { userData } = useUserContext();
   const [isLoading, setIsLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [authMethod, setAuthMethod] = useState("phone");

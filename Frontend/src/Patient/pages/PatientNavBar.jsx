@@ -1,12 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Bell, LogOut, Settings, Badge } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export const PatientNavBar = () => {
   const [notifications] = useState(2);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    window.location.href = "/";
+    localStorage.setItem("healthRankAuth", null);
+    localStorage.setItem("healthAuth", null);
+    navigate("/")
   };
   return (
     <>
@@ -27,14 +31,6 @@ export const PatientNavBar = () => {
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="h-5 w-5" />
-                {notifications > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-red-500">
-                    {notifications}
-                  </Badge>
-                )}
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Settings className="h-5 w-5" />
               </Button>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="h-5 w-5" />
