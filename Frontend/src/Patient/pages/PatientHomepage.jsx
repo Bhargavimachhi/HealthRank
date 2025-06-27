@@ -176,9 +176,9 @@ export default function PatientHomePage() {
                     <HeartPlus className="h-6 w-6" />
                     Manage Health
                   </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2">
-                    <Phone className="h-6 w-6" />
-                    Emergency Contact
+                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate(`/patient/${userData._id}/metrics`)}>
+                    <Plus className="h-6 w-6" />
+                    Health Analysis
                   </Button>
                 </div>
               </CardContent>
