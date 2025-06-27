@@ -20,6 +20,14 @@ import {
 import { useParams } from "react-router";
 import axios from "axios";
 import { useUserContext } from "../../../context/userContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function TriageResultPage() {
   const report = useParams();
@@ -79,6 +87,35 @@ export default function TriageResultPage() {
     }
   };
 
+  const handleHindiTranslate = async () => {
+    if (!triageResult) return;
+    setIsTranslating(true);
+    try {
+      const response = await axios.post("http://localhost:8000/translate/Hindi", {
+        triage_level: triageResult.result.Triage_level,
+        reason: triageResult.result.Reason,
+        actions: triageResult.result.actions,
+        type: triageResult.type,
+      });
+      setTriageResult({
+        ...triageResult,
+        result: {
+          ...triageResult.result,
+          Triage_level_original: triageResult.result.Triage_level,
+          Triage_level: response.data.triage_level,
+          Reason: response.data.reason,
+          actions: response.data.actions,
+        },
+        type: response.data.type,
+      });
+      setTranslated(true);
+    } catch (err) {
+      alert("Translation failed. Please try again.");
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   const getTriageVisuals = (level) => {
     if (!level) return { color: "bg-gray-400", icon: <Clock className="h-6 w-6 text-white" />, label: "Unknown" };
     if (level.toLowerCase().includes("high"))
@@ -108,7 +145,12 @@ export default function TriageResultPage() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
         
-          <Button
+         
+
+          <DropdownMenu>
+  <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+  <DropdownMenuContent>
+     <Button
             className="mb-4"
             variant="outline"
             onClick={handleTranslate}
@@ -125,6 +167,27 @@ export default function TriageResultPage() {
               "Translate to Gujarati"
             )}
           </Button>
+
+            <Button
+            className="mb-4"
+            variant="outline"
+            onClick={handleHindiTranslate}
+            disabled={isTranslating || translated}
+          >
+            {isTranslating ? (
+              <>
+                <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                Translating...
+              </>
+            ) : translated ? (
+              "Translated to Hindi"
+            ) : (
+              "Translate to Hindi"
+            )}
+          </Button>
+   
+  </DropdownMenuContent>
+</DropdownMenu>
           <div className="flex justify-center mb-4">
             <div className="bg-gradient-to-r from-blue-600 to-green-600 p-3 rounded-full">
               <Stethoscope className="h-8 w-8 text-white" />
