@@ -68,7 +68,7 @@ const TaskPage = () => {
   const renderTaskCard = (task) => (
     <Card
       key={task.id}
-      className="hover:shadow-lg transition border rounded-2xl bg-gradient-to-br from-white to-blue-50"
+      className="hover:shadow-lg transition border rounded-2xl"
     >
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
@@ -134,11 +134,11 @@ const TaskPage = () => {
   );
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-10 bg-gradient-to-t from-blue-50 to-white rounded-xl shadow-xl">
-      <Card className="border-blue-200 shadow-md bg-gradient-to-r from-white via-blue-50 to-blue-100">
+    <div className="p-6 max-w-6xl mx-auto space-y-10 rounded-xl shadow-xl">
+      <Card className="border-blue-200 shadow-md">
         <CardHeader>
-          <CardTitle className="text-3xl font-extrabold text-blue-800 text-center">
-            ✨ Health Tracker ✨
+          <CardTitle className="text-3xl font-extrabold text-center">
+            Health Tracker
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col md:flex-row gap-4 items-center justify-center">
@@ -157,9 +157,9 @@ const TaskPage = () => {
           />
           <Button
             onClick={addTask}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full shadow-lg"
+            className="bg-green-500 hover:bg-blue-700 text-white px-6 py-2 rounded-full shadow-lg"
           >
-            ➕ Add Task
+            + Add Task
           </Button>
         </CardContent>
       </Card>
