@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import ReportUpload from "./Patient/pages/ReportUpload";
 import TriageResult from "./Patient/pages/TriageResult";
-import PatientDetailsPage from "./Patient/pages/PatientDetailPage";
 import PatientFormPage from "./Patient/pages/PatientForm";
 import LandingPage from "./LandingPage";
 import DashboardPage from "./Doctor/pages/DashBoardPage";
@@ -21,6 +20,7 @@ import PastReportsPage from "./Patient/pages/PastReportsPage";
 import DoctorSignupPage from "./Doctor/pages/DoctorSignupPage";
 import DoctorLayout from "./layouts/DoctorLayout";
 import TaskPage from "./Patient/pages/TaskPage";
+import {PatientMetricsGraph} from "./Patient/pages/PatientMetricsGraph";
 
 export default function HackerTemplateSuccess() {
   const healthRankAuth = JSON.parse(localStorage.getItem("healthRankAuth"));
@@ -51,6 +51,7 @@ export default function HackerTemplateSuccess() {
           <Route path="" element={<PatientHomePage />} />
           <Route path=":id/report-upload" element={<ReportUpload />} />
           <Route path=":id/tasks" element={<TaskPage />} />
+          <Route path=":id/metrics" element={<PatientMetricsGraph />} />
           <Route path=":id/past-reports" element={<PastReportsPage />} />
         </Route>
 
