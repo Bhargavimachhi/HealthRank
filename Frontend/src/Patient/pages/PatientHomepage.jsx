@@ -21,6 +21,7 @@ import {
   LogOut,
   Bell,
   Settings,
+  HeartPlus,
 } from "lucide-react";
 import { useUserContext } from "../../../context/userContext";
 import { useNavigate } from "react-router";
@@ -171,9 +172,9 @@ export default function PatientHomePage() {
                     <FileText className="h-6 w-6" />
                     View Past Reports
                   </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2">
-                    <Calendar className="h-6 w-6" />
-                    Book Appointment
+                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate(`/patient/${userData._id}/tasks`)}>
+                    <HeartPlus className="h-6 w-6" />
+                    Manage Health
                   </Button>
                   <Button variant="outline" className="h-20 flex-col gap-2">
                     <Phone className="h-6 w-6" />
