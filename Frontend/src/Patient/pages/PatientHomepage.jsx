@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,9 @@ import { useUserContext } from "../../../context/userContext";
 import { useNavigate } from "react-router";
 
 export default function PatientHomePage() {
-  const { userData } = useUserContext();
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("healthAuth"))
+  );
   const navigate = useNavigate();
 
   function countAgeFromBirthday(birthday) {
@@ -44,6 +46,19 @@ export default function PatientHomePage() {
     }
 
     return age;
+  }
+
+  function getReportSummary(reports) {
+    let totalReports = 0;
+    const reportTypeCounts = {};
+
+    for (const [type, reportList] of Object.entries(reports)) {
+      const count = Array.isArray(reportList) ? reportList.length : 0;
+      reportTypeCounts[type] = count;
+      totalReports += count;
+    }
+
+    return totalReports;
   }
 
   const recentActivities = [
@@ -120,10 +135,7 @@ export default function PatientHomePage() {
                   </div>
                 </div>
 
-                <Button
-                  variant="outline"
-                  className="w-full"
-                >
+                <Button variant="outline" className="w-full">
                   <FileText className="h-4 w-4 mr-2" />
                   Update Profile
                 </Button>
@@ -145,12 +157,14 @@ export default function PatientHomePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Button
                     className="h-20 bg-gradient-to-r from-[#007ac2] to-[#33c2a6] hover:from-[#0062a0] hover:to-[#2ea88f] px-6 py-2 text-white text-sm"
-                    onClick={() => (navigate(`/patient/${userData._id}/report-upload`))}
+                    onClick={() =>
+                      navigate(`/patient/${userData._id}/report-upload`)
+                    }
                   >
                     <Plus className="h-6 w-6" />
                     Add Medical Report
                   </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2">
+                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate(`/patient/${userData._id}/past-reports`)}>
                     <FileText className="h-6 w-6" />
                     View Past Reports
                   </Button>
@@ -198,7 +212,7 @@ export default function PatientHomePage() {
                         <p className="text-sm font-medium text-blue-800">
                           Reports Uploaded
                         </p>
-                        <p className="text-2xl font-bold text-blue-900">3</p>
+                        <p className="text-2xl font-bold text-blue-900">{getReportSummary(userData.reports)}</p>
                       </div>
                       <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
                         <FileText className="h-6 w-6 text-blue-600" />
