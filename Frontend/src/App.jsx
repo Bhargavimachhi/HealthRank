@@ -21,7 +21,6 @@ import PastReportsPage from "./Patient/pages/PastReportsPage";
 
 export default function HackerTemplateSuccess() {
   const healthRankAuth = JSON.parse(localStorage.getItem("healthRankAuth"));
-  console
   return (
     <Router>
       <Toaster />
@@ -34,9 +33,8 @@ export default function HackerTemplateSuccess() {
         <Route path="/login/patient" element={<PatientLoginPage />} />
         
         <Route path=":reportId/triage-result" element={<TriageResult />} />
-        <Route path="/patient-details" element={<PatientDetailsPage />} />
 
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/doctor" element={<DashboardPage />} />
 
         <Route
           path="/patient"

@@ -129,16 +129,19 @@ export default function PatientHomePage() {
                   <div>
                     <h3 className="font-semibold text-lg">{userData.name}</h3>
                     <p className="text-gray-600">
-                      {countAgeFromBirthday(userData.birthday)} years,{" "}
-                      {userData.gender}
+                      {userData?.email}
+                    </p>
+                    <p className="text-gray-600">
+                      DOB : {userData?.birthday?.split("T")[0]}
+                    </p>
+                    <p className="text-gray-600">
+                      {countAgeFromBirthday(userData.birthday)} years
+                    </p>
+                    <p className="text-gray-600">
+                      {userData?.gender}
                     </p>
                   </div>
                 </div>
-
-                <Button variant="outline" className="w-full">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Update Profile
-                </Button>
               </CardContent>
             </Card>
           </div>
@@ -190,21 +193,6 @@ export default function PatientHomePage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-green-800">
-                          Overall Status
-                        </p>
-                        <p className="text-2xl font-bold text-green-900">
-                          Good
-                        </p>
-                      </div>
-                      <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-                        <Stethoscope className="h-6 w-6 text-green-600" />
-                      </div>
-                    </div>
-                  </div>
 
                   <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                     <div className="flex items-center justify-between">
@@ -218,48 +206,6 @@ export default function PatientHomePage() {
                         <FileText className="h-6 w-6 text-blue-600" />
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                {/* Recent Activities */}
-                <div>
-                  <h4 className="font-medium mb-4">Recent Activities</h4>
-                  <div className="space-y-3">
-                    {recentActivities.map((activity) => (
-                      <div
-                        key={activity.id}
-                        className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
-                      >
-                        <div className="bg-white p-2 rounded-full shadow-sm">
-                          {activity.type === "appointment" && (
-                            <Calendar className="h-4 w-4 text-blue-600" />
-                          )}
-                          {activity.type === "report" && (
-                            <FileText className="h-4 w-4 text-green-600" />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h5 className="font-medium text-gray-900">
-                            {activity.title}
-                          </h5>
-                          <p className="text-sm text-gray-600">
-                            {activity.description}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {activity.date}
-                          </p>
-                        </div>
-                        <Badge
-                          variant={
-                            activity.status === "upcoming"
-                              ? "default"
-                              : "secondary"
-                          }
-                        >
-                          {activity.status}
-                        </Badge>
-                      </div>
-                    ))}
                   </div>
                 </div>
               </CardContent>
