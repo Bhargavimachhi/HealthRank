@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { User, Clock, FileText, CheckCircle, XCircle, LogOut, Bell } from "lucide-react"
 import { PatientDetailModal } from "@/components/PatientModal"
+import { useUserContext } from "../../../context/userContext"
 
 
 const mockIncomingRequests = [
@@ -92,6 +93,7 @@ const mockAcceptedRequests = [
 
 
 export default function DashboardPage() {
+  const {userData} = useUserContext();
   const [doctorName, setDoctorName] = useState("Doctor")
   const [incomingRequests, setIncomingRequests] = useState(mockIncomingRequests)
   const [acceptedRequests, setAcceptedRequests] = useState(mockAcceptedRequests)
@@ -126,11 +128,7 @@ export default function DashboardPage() {
     )
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem("doctorAuth")
-    localStorage.removeItem("doctorName")
-    window.location.href = "/login/doctor"
-  }
+  
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -160,26 +158,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">Doctor Dashboard</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="icon">
-                <Bell className="h-5 w-5" />
-              </Button>
-              <span className="text-sm text-gray-700">Welcome, {doctorName}</span>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

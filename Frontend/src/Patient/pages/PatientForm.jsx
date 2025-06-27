@@ -68,10 +68,13 @@ export default function PatientFormPage() {
     setIsLoading(true);
 
     try {
-      const addToDB = await axios.post("http://localhost:5000/patient/add", formData);
       const addToFirebase = await axios.post(
         "http://localhost:5000/signup/email-password",
         { email: formData.email, password: formData.password }
+      );
+      const addToDB = await axios.post(
+        "http://localhost:5000/patient/add",
+        formData
       );
       toast.success("Sign Up Successful");
     } catch (err) {

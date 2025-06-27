@@ -27,6 +27,7 @@ const UserProvider = ({ children }) => {
         );
         const User = response.data[savedAuth.role];
         dispatch({ type: "SET_USER_DATA", payload: User });
+        console.log(response);
 
         localStorage.setItem("healthAuth", JSON.stringify(User));
     } catch (error) {
