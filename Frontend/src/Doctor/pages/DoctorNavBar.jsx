@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Bell, LogOut, Settings, Badge } from "lucide-react";
-import { useState } from "react";
+import { useUserContext } from "../../../context/userContext";
+import { Bell, LogOut } from "lucide-react";
 import { useNavigate } from "react-router";
 
-export const PatientNavBar = () => {
+export const DoctorNavBar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.setItem("healthRankAuth", null);
     localStorage.setItem("healthAuth", null);
-    navigate("/")
+    navigate("/");
   };
   return (
     <>
