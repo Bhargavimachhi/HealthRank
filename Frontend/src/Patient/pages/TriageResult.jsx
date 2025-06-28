@@ -41,6 +41,11 @@ import {
   Plus,
   Activity,
   Loader2,
+  Mic,
+  Mic2,
+  Speaker,
+  SpeakerIcon,
+  SpeechIcon,
 } from "lucide-react";
 import { useParams } from "react-router";
 import axios from "axios";
@@ -164,6 +169,18 @@ export default function TriageResultPage() {
     result?.Triage_level_original || result?.Triage_level
   );
 
+  const handleSpeak = (text) => {
+    const value = new SpeechSynthesisUtterance(text);
+    value.lang = "hi-IN";
+    window.speechSynthesis.speak(value);
+  };
+
+  const handleSpeakArray = (array) => {
+    for (let text of array) {
+      handleSpeak(text);
+    }
+  };
+
   const acceptOffer = (index) => {
     const days = times[index];
     if (!tasks[index] || isNaN(days) || days <= 0) return;
@@ -176,7 +193,6 @@ export default function TriageResultPage() {
     };
     let a = tasks.splice(0, index);
     let b = tasks.splice(index);
-    console.log(a+" "+b);
     setTasks([...a, ...b]);
     let data = JSON.parse(localStorage.getItem("tasks"));
     localStorage.setItem("tasks", JSON.stringify([...data, newTask]));
@@ -196,10 +212,20 @@ export default function TriageResultPage() {
             Based on your uploaded report and symptom analysis
           </p>
 
+          <Button
+            variant="outline"
+            className="m-4"
+            onClick={() =>
+              handleSpeak("Your Current Report is on " + triageLevel)
+            }
+          >
+            <Mic />
+          </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="mt-4">
-                Translate
+                {isTranslating ? "Translating..." : "Translate"}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -225,7 +251,19 @@ export default function TriageResultPage() {
           <div className="lg:col-span-2 space-y-6">
             <Card className="shadow-xl">
               <CardHeader>
-                <CardTitle>Triage Assessment</CardTitle>
+                <CardTitle>
+                  <div className="flex justify-between">
+                    Triage Assessment
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        handleSpeak("Your Report is on" + triageLevel)
+                      }
+                    >
+                      <Mic />
+                    </Button>
+                  </div>{" "}
+                </CardTitle>
                 <CardDescription>
                   AI-powered health risk evaluation
                 </CardDescription>
@@ -253,9 +291,19 @@ export default function TriageResultPage() {
                 </div>
                 <Separator />
                 <div>
-                  <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
-                    <Activity className="h-5 w-5 text-blue-600" /> Reasons
-                  </h3>
+                  <div className="flex justify-between">
+                    <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
+                      <Activity className="h-5 w-5 text-blue-600" /> Reasons
+                    </h3>
+                    <Button
+                      variant="outline"
+                      className="m-4"
+                      onClick={() => handleSpeakArray(result?.Reason)}
+                    >
+                      <Mic />
+                    </Button>
+                  </div>
+
                   <ul className="space-y-2 pl-2">
                     {(result?.Reason || []).map((r, i) => (
                       <li
@@ -270,10 +318,22 @@ export default function TriageResultPage() {
                 <Separator />
 
                 <div>
-                  <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
-                    <CheckCircle className="h-5 w-5 text-green-600" />{" "}
-                    Recommended Actions
-                  </h3>
+                  <div className="flex justify-between">
+                    <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
+                      <CheckCircle className="h-5 w-5 text-green-600" />{" "}
+                      Recommended Actions
+                    </h3>
+                    <Button
+                      variant="outline"
+                      className="m-4"
+                      onClick={() =>
+                        handleSpeak(result?.actions)
+                      }
+                    >
+                      <Mic />
+                    </Button>
+                  </div>
+
                   <p className="text-gray-700 text-sm leading-relaxed">
                     {result?.actions}
                   </p>
@@ -285,7 +345,7 @@ export default function TriageResultPage() {
                     Tasks
                   </h3>
                   <ul className="space-y-3">
-                    {tasks.map((task, i) => (
+                    {tasks?.map((task, i) => (
                       <li
                         key={i}
                         className="flex items-start justify-between bg-gray-50 p-3 rounded-xl border hover:shadow transition"
@@ -340,14 +400,6 @@ export default function TriageResultPage() {
                   <Plus className="h-5 w-5" />
                   Upload New Report
                 </Button>
-                <Button variant="outline" className="h-16 flex-col gap-1">
-                  <Calendar className="h-5 w-5" />
-                  Appointment
-                </Button>
-                <Button variant="outline" className="h-16 flex-col gap-1">
-                  <Phone className="h-5 w-5" />
-                  Emergency
-                </Button>
               </CardContent>
             </Card>
           </div>
@@ -357,6 +409,13 @@ export default function TriageResultPage() {
               <CardHeader>
                 <CardTitle className="flex gap-2 items-center">
                   <FileText className="h-5 w-5 text-blue-600" /> Report Summary
+                  <Button
+                    variant="outline"
+                    className="m-4"
+                    onClick={() => handleSpeak("Report Type is" + type)}
+                  >
+                    <Mic />
+                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
