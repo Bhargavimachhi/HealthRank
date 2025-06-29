@@ -49,27 +49,6 @@ export default function ReportUploadPage() {
    
   });
 
-  function updateMetrics(type, res) {
-    let raw = localStorage.getItem("metrics");
-    let data = raw ? JSON.parse(raw) : {};
-
-        if (!Array.isArray(data[type])) {
-          data[type] = [];
-        }
-
-        console.log(data);
-
-        if (res?.data[type] !== undefined) {
-          data[type].push({
-            date: new Date().toISOString().split("T")[0],
-            value: res.data[type],
-          });
-        }
-
-        console.log(data);
-        localStorage.setItem("metrics", JSON.stringify(data));
-  }
-
   function countAgeFromBirthday(birthday) {
     const birthDate = new Date(birthday);
     const today = new Date();
@@ -317,7 +296,6 @@ export default function ReportUploadPage() {
         
 
         const res = await axios.post("http://127.0.0.1:8000/triage_classify/Blood_sugar", bloodSugarObj);
-        updateMetrics("FBG_Score", res);
         
         const res1 =  await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
       patient: userData._id,
@@ -354,10 +332,6 @@ export default function ReportUploadPage() {
 
     const res = await axios.post("http://127.0.0.1:8000/triage_classify/cbc", bloodCountObj);
     console.log("Blood Count response:", res.data);
-    updateMetrics("Hemoglobin_g_dL", res);
-    updateMetrics("White_blood_cell_count_10_3_uL", res);
-    updateMetrics("Platelet_count_10_3_uL", res);
-    updateMetrics("Red_blood_cell_count_10_6_uL", res);
 
     const res1 = await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
       patient: userData._id,
@@ -389,7 +363,6 @@ else if (formData.reportType === "serumCreatinine") {
     };
 
     const res = await axios.post("http://localhost:8000/triage_classify/creatinine", serumCreatinineObj);
-    updateMetrics("Serum_creatinine_mg_dL", res);
 
     const res1 = await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
       patient: userData._id,
@@ -455,10 +428,6 @@ else if (formData.reportType === "electrolyte") {
     };
 
     const res = await axios.post("http://127.0.0.1:8000/triage_classify/electrolyte", electrolyteObj);
-    updateMetrics("Sodium_mEq_L", res);
-    updateMetrics("Potassium_mEq_L", res);
-    updateMetrics("Chloride_mEq_L", res);
-    updateMetrics("Bicarbonate_mEq_L", res);
 
     const res1 = await axios.post(`http://localhost:5000/patient/${userData._id}/upload-report`, {
       patient: userData._id,
